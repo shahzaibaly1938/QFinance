@@ -22,6 +22,7 @@ class Ticketsale(models.Model):
     flight_to = models.CharField(max_length=100)
     notes = models.TextField(blank=True, null=True)
     reference = models.CharField(max_length=100)
+    paid = models.CharField(max_length=30, choices=[("paid", "Paid"), ("unpaid", "Unpaid")], default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

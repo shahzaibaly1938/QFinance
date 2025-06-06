@@ -1,0 +1,38 @@
+<h2>Monthly Dashboard</h2>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<form method="get">
+  <label>Agent:</label>
+  <select name="agent">
+    <option value="">All</option>
+    {% for agent in agents %}
+      <option value="{{ agent.id }}">{{ agent.user.username }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Customer:</label>
+  <select name="customer">
+    <option value="">All</option>
+    {% for customer in customers %}
+      <option value="{{ customer.id }}">{{ customer.name }}</option>
+    {% endfor %}
+  </select>
+
+  <label>From:</label>
+  <input type="date" name="start_date">
+  <label>To:</label>
+  <input type="date" name="end_date">
+
+  <button type="submit">Filter</button>
+</form>
+
+<ul>
+  <li>Total Sales: Rs {{ total_sales }}</li>
+  <li>Total Tickets Sold: {{ total_tickets }}</li>
+  <li>Total Expenses: Rs {{ total_expense }}</li>
+  <li>Commission Paid: Rs {{ total_commission }}</li>
+  <li><strong>Net Profit: Rs {{ total_profit }}</strong></li>
+</ul>
+
+<a href="{% url 'export_ticket_sales' %}" class="btn btn-primary">Export Sales to Excel</a>
+

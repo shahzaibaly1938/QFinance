@@ -1,0 +1,20 @@
+<h2>Customer Ledger: {{ customer.name }}</h2>
+
+<h3>Tickets</h3>
+<ul>
+  {% for ticket in tickets %}
+    <li>{{ ticket.pnr }} - Rs.{{ ticket.amount }}</li>
+  {% endfor %}
+</ul>
+
+<h3>Payments</h3>
+<ul>
+  {% for payment in payments %}
+    <li>{{ payment.date }} - Rs.{{ payment.amount }}</li>
+  {% endfor %}
+</ul>
+
+<h4>Total Paid: Rs.{{ total_paid }}</h4>
+<h4>Total Due: Rs.{{ total_due }}</h4>
+
+<a href="{% url 'generate_invoice' customer.id %}" target="_blank">Generate Invoice (PDF)</a>
