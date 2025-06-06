@@ -7,9 +7,10 @@ from users.models import Agent
 from customers.models import Customer
 from django.db.models.functions import TruncMonth
 from django.db.models import Sum
-import calendar
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def dashboard(request):
     current_month = now().month
     current_year = now().year
