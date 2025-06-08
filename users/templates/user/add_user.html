@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Q Travel Finance{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100" style="background: linear-gradient(135deg, #f8fafc 0%, #e5e9f2 100%);">
+  <div class="w-full max-w-lg bg-[#fdfdfb] rounded-2xl shadow-xl px-8 py-10">
+    <h1 class="text-2xl font-bold text-[#1a237e] mb-6 text-center font-sans">Add New User</h1>
+    {% if messages %}
+    <ul class="mb-4 space-y-2">
+      {% for message in messages %}
+      <li{% if message.tags %} class="px-4 py-2 rounded text-sm font-medium 
+        {% if 'error' in message.tags %} bg-red-100 text-red-700 border border-red-200
+        {% elif 'success' in message.tags %} bg-green-100 text-green-700 border border-green-200
+        {% else %}bg-blue-100 text-blue-700 border border-blue-200
+        {% endif %}"{% endif %}>
+        {{ message }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="first_name" class="block text-[#1a237e] font-medium mb-1">First Name</label>
+          <input type="text" id="first_name" name="first_name" required
+            class="block w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-[#1a237e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] transition font-sans" />
+        </div>
+        <div>
+          <label for="last_name" class="block text-[#1a237e] font-medium mb-1">Last Name</label>
+          <input type="text" id="last_name" name="last_name" required
+            class="block w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-[#1a237e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] transition font-sans" />
+        </div>
+      </div>
+      <div>
+        <label for="email" class="block text-[#1a237e] font-medium mb-1">Email</label>
+        <input type="email" id="email" name="email" required
+          class="block w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-[#1a237e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] transition font-sans" />
+      </div>
+      <div>
+        <label for="username" class="block text-[#1a237e] font-medium mb-1">Username</label>
+        <input type="text" id="username" name="username" required
+          class="block w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-[#1a237e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] transition font-sans" />
+      </div>
+      <div>
+        <label for="password" class="block text-[#1a237e] font-medium mb-1">Password</label>
+        <input type="password" id="password" name="password" required
+          class="block w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-[#1a237e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] transition font-sans" />
+      </div>
+      <div>
+        <label for="role" class="block text-[#1a237e] font-medium mb-1">Role</label>
+        <select id="role" name="role" required
+          class="block w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-[#1a237e] focus:outline-none focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] transition font-sans">
+          <option value="">Select Role</option>
+          <option value="manager">Manager</option>
+          <option value="admin">Admin</option>
+          <option value="staff">Staff</option>
+        </select>
+      </div>
+      <button type="submit"
+        class="w-full py-2 px-4 rounded-lg text-white bg-[#1a237e] hover:bg-[#3949ab] font-semibold shadow transition font-sans mt-2">
+        Add User
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
