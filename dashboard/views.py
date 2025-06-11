@@ -39,8 +39,9 @@ def dashboard(request):
     total_tickets = sales.count()
 
     monthly_expense = Expense.objects.filter(date__year=current_year, date__month=current_month)
+    print(monthly_expense)
     total_expense = monthly_expense.aggregate(total=Sum('amount'))['total'] or 0
-    
+    print(total_expense)
     agent = Agent.objects.get(user=request.user)
     commission_rate = agent.commission_rate
     total_commission = total_sales_amount * commission_rate

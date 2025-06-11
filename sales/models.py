@@ -9,6 +9,11 @@ class Airline(models.Model):
     def __str__(self):
         return self.name
 
+class Destination(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 class Ticketsale(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -18,8 +23,8 @@ class Ticketsale(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     reserve_date = models.DateField()
     flight_date = models.DateField()
-    flight_from = models.CharField(max_length=100)
-    flight_to = models.CharField(max_length=100)
+    flight_from = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='flight_from', default='')
+    flight_to = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='flight_to', default='')
     notes = models.TextField(blank=True, null=True)
     reference = models.CharField(max_length=100)
     paid = models.CharField(max_length=30, choices=[("paid", "Paid"), ("unpaid", "Unpaid")], default='')
