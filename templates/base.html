@@ -1,16 +1,510 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 
 <head>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'dist/style.css' %}">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>{% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'dist/style.css' %}" />
+    <script
+        src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.5.x/dist/component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.3/dist/alpine.min.js" defer></script>
 </head>
 
-<body class="bg-[#e0f7fa]">
-    <p class="text-3xl font-bold underline">hello</p>
-    {% block content %}{% endblock %}
+<body class="bg-[#0B1120]">
+    <div x-data="setup()" x-init="$refs.loading.classList.add('hidden'); setColors(color);" :class="{ 'dark': isDark}">
+        <div class="flex h-screen antialiased text-gray-900 bg-gray-100 dark:bg-dark dark:text-light">
+            <!-- Loading screen -->
+            <div x-ref="loading"
+                class="fixed inset-0 z-50 flex items-center justify-center text-2xl font-semibold text-white bg-primary-darker">
+                Loading.....
+            </div>
 
+            <!-- Sidebar -->
+            <aside class="flex-shrink-0 hidden w-64 bg-[#0B1120] border-r border-[#1E293B] md:block">
+                <div class="flex flex-col h-full">
+                    <!-- Sidebar links -->
+                    <nav aria-label="Main" class="flex-1 px-2 py-4 space-y-2 overflow-y-hidden hover:overflow-y-auto">
+                        <!-- Dashboards links -->
+                        <div x-data="{ isActive: true, open: true}">
+                            <a href="#" @click="$event.preventDefault(); open = !open"
+                                class="flex items-center p-2 text-[#F1F5F9] transition-colors rounded-md hover:bg-[#1E3A8A]"
+                                :class="{'bg-[#1E3A8A]': isActive || open}" role="button" aria-haspopup="true"
+                                :aria-expanded="(open || isActive) ? 'true' : 'false'">
+                                <span aria-hidden="true">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                </span>
+                                <span class="ml-2 text-sm"> Dashboards </span>
+                                <span class="ml-auto" aria-hidden="true">
+                                    <svg class="w-4 h-4 transition-transform transform" :class="{ 'rotate-180': open }"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </span>
+                            </a>
+                            <div role="menu" x-show="open" class="mt-2 space-y-2 px-7" aria-label="Dashboards">
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-[#CBD5E1] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    Reports
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Pages links -->
+                        <div x-data="{ isActive: false, open: false }">
+                            <a href="#" @click="$event.preventDefault(); open = !open"
+                                class="flex items-center p-2 text-[#F1F5F9] transition-colors rounded-md hover:bg-[#1E3A8A]"
+                                :class="{ 'bg-[#1E3A8A]': isActive || open }" role="button" aria-haspopup="true"
+                                :aria-expanded="(open || isActive) ? 'true' : 'false'">
+                                <span aria-hidden="true">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                </span>
+                                <span class="ml-2 text-sm"> Pages </span>
+                                <span aria-hidden="true" class="ml-auto">
+                                    <svg class="w-4 h-4 transition-transform transform" :class="{ 'rotate-180': open }"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </span>
+                            </a>
+                            <div x-show="open" class="mt-2 space-y-2 px-7" role="menu" arial-label="Pages">
+                                <a href="pages/blank.html" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    Blank
+                                </a>
+                                <a href="pages/404.html" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    404
+                                </a>
+                                <a href="pages/500.html" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    500
+                                </a>
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    Profile (soon)
+                                </a>
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    Pricing (soon)
+                                </a>
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    Kanban (soon)
+                                </a>
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    Feed (soon)
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Authentication links -->
+                        <div x-data="{ isActive: false, open: false}">
+                            <a href="#" @click="$event.preventDefault(); open = !open"
+                                class="flex items-center p-2 text-[#F1F5F9] transition-colors rounded-md hover:bg-[#1E3A8A]"
+                                :class="{'bg-[#1E3A8A]': isActive || open}" role="button" aria-haspopup="true"
+                                :aria-expanded="(open || isActive) ? 'true' : 'false'">
+                                <span aria-hidden="true">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </span>
+                                <span class="ml-2 text-sm"> Authentication </span>
+                                <span aria-hidden="true" class="ml-auto">
+                                    <svg class="w-4 h-4 transition-transform transform" :class="{ 'rotate-180': open }"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </span>
+                            </a>
+                            <div x-show="open" class="mt-2 space-y-2 px-7" role="menu" aria-label="Authentication">
+                                  <a href="auth/reset-password.html" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    My Account
+                                </a>
+                                <a href="{% url 'add_user' %}" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                   Add New User
+                                </a>
+                                <a href="{% url 'password_reset' %}" role="menuitem"
+                                    class="block p-2 text-sm text-[#64748B] transition-colors duration-200 rounded-md hover:text-[#F1F5F9]">
+                                    Forgot Password
+                                </a>
+                              
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </aside>
+
+
+            <div class="flex-1 h-full overflow-x-hidden overflow-y-auto">
+                <!-- Navbar -->
+                <header class="relative bg-blue-700 dark:bg-gray-900">
+                    <div class="flex items-center justify-between p-2 border-b border-blue-800 dark:border-blue-600">
+                        <!-- Mobile menu button -->
+                        <button @click="isMobileMainMenuOpen = !isMobileMainMenuOpen"
+                            class="p-1 transition-colors md:hidden duration-200 rounded-md text-white focus:outline-none focus:ring">
+                            <span class="sr-only">Open main menu</span>
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+
+                        <!-- Brand -->
+                        <a href="{% url 'dashboard' %}"
+                            class="inline-block text-2xl font-bold tracking-wider uppercase text-white dark:text-white">
+                            Q travel finance
+                        </a>
+
+                        <!-- Desktop Right buttons -->
+                        <nav aria-label="Secondary" class="flex space-x-2 mt-2 md:flex md:items-center">
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click="open = !open; $nextTick(() => { if(open){ $refs.userMenu.focus() } })"
+                                    type="button"
+                                    class="transition-opacity duration-200 rounded-full text-white focus:outline-none focus:ring">
+                                    <span class="sr-only">User menu</span>
+                                    <svg fill="#ffffff" width="30px" height="30px" viewBox="0 0 128 128">
+                                        <g>
+                                            <path
+                                                d="M30,49c0,18.7,15.3,34,34,34s34-15.3,34-34S82.7,15,64,15S30,30.3,30,49z" />
+                                            <path
+                                                d="M24.4,119.4C35,108.8,49,103,64,103s29,5.8,39.6,16.4l5.7-5.7C97.2,101.7,81.1,95,64,95s-33.2,6.7-45.3,18.7L24.4,119.4z" />
+                                        </g>
+                                    </svg>
+                                </button>
+
+                                <!-- User dropdown menu -->
+                                <div x-show="open" x-ref="userMenu"
+                                    x-transition:enter="transition-all transform ease-out"
+                                    x-transition:enter-start="translate-y-1/2 opacity-0"
+                                    x-transition:enter-end="translate-y-0 opacity-100"
+                                    x-transition:leave="transition-all transform ease-in"
+                                    x-transition:leave-start="translate-y-0 opacity-100"
+                                    x-transition:leave-end="translate-y-1/2 opacity-0" @click.away="open = false"
+                                    @keydown.escape="open = false"
+                                    class="absolute right-0 w-48 py-1 bg-white rounded-md shadow-lg top-12 ring-1 ring-black ring-opacity-5 dark:bg-gray-800">
+                                    <a href="#" role="menuitem"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 dark:text-gray-200 dark:hover:bg-blue-700">
+                                        Your Profile
+                                    </a>
+                                    <a href="#" role="menuitem"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 dark:text-gray-200 dark:hover:bg-blue-700">
+                                        Settings
+                                    </a>
+                                    <a href="#" role="menuitem"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 dark:text-gray-200 dark:hover:bg-blue-700">
+                                        Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+
+                    <!-- Mobile menu remains unchanged, unless you'd like it themed too -->
+                     <div class="border-b md:hidden dark:border-primary-darker" x-show="isMobileMainMenuOpen"
+                    @click.away="isMobileMainMenuOpen = false">
+                    <nav aria-label="Main" class="px-2 py-4 space-y-2">
+                        <!-- Dashboards links -->
+                        <div x-data="{ isActive: true, open: true}">
+                            <!-- active & hover classes 'bg-primary-100 dark:bg-primary' -->
+                            <a href="#" @click="$event.preventDefault(); open = !open"
+                                class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-primary-100 dark:hover:bg-primary"
+                                :class="{'bg-primary-100 dark:bg-primary': isActive || open}" role="button"
+                                aria-haspopup="true" :aria-expanded="(open || isActive) ? 'true' : 'false'">
+                                <span aria-hidden="true">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                </span>
+                                <span class="ml-2 text-sm"> Dashboards </span>
+                                <span class="ml-auto" aria-hidden="true">
+                                    <!-- active class 'rotate-180' -->
+                                    <svg class="w-4 h-4 transition-transform transform" :class="{ 'rotate-180': open }"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </span>
+                            </a>
+                            <div role="menu" x-show="open" class="mt-2 space-y-2 px-7" aria-label="Dashboards">
+                                <!-- active & hover classes 'text-gray-700 dark:text-light' -->
+                                <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
+
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
+                                    Reports
+                                </a>
+                            </div>
+                        </div>
+
+
+                        <!-- Pages links -->
+                        <div x-data="{ isActive: false, open: false }">
+                            <!-- active classes 'bg-primary-100 dark:bg-primary' -->
+                            <a href="#" @click="$event.preventDefault(); open = !open"
+                                class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-primary-100 dark:hover:bg-primary"
+                                :class="{ 'bg-primary-100 dark:bg-primary': isActive || open }" role="button"
+                                aria-haspopup="true" :aria-expanded="(open || isActive) ? 'true' : 'false'">
+                                <span aria-hidden="true">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                </span>
+                                <span class="ml-2 text-sm"> Pages </span>
+                                <span aria-hidden="true" class="ml-auto">
+                                    <!-- active class 'rotate-180' -->
+                                    <svg class="w-4 h-4 transition-transform transform" :class="{ 'rotate-180': open }"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </span>
+                            </a>
+                            <div x-show="open" class="mt-2 space-y-2 px-7" role="menu" arial-label="Pages">
+                                <!-- active & hover classes 'text-gray-700 dark:text-light' -->
+                                <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
+                                <a href="pages/blank.html" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700">
+                                    Blank
+                                </a>
+                                <a href="pages/404.html" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700">
+                                    404
+                                </a>
+                                <a href="pages/500.html" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700">
+                                    500
+                                </a>
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700">
+                                    Profile (soon)
+                                </a>
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
+                                    Pricing (soon)
+                                </a>
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
+                                    Kanban (soon)
+                                </a>
+                                <a href="#" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
+                                    Feed (soon)
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Authentication links -->
+                        <div x-data="{ isActive: false, open: false}">
+                            <!-- active & hover classes 'bg-primary-100 dark:bg-primary' -->
+                            <a href="#" @click="$event.preventDefault(); open = !open"
+                                class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-primary-100 dark:hover:bg-primary"
+                                :class="{'bg-primary-100 dark:bg-primary': isActive || open}" role="button"
+                                aria-haspopup="true" :aria-expanded="(open || isActive) ? 'true' : 'false'">
+                                <span aria-hidden="true">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </span>
+                                <span class="ml-2 text-sm"> Authentication </span>
+                                <span aria-hidden="true" class="ml-auto">
+                                    <!-- active class 'rotate-180' -->
+                                    <svg class="w-4 h-4 transition-transform transform" :class="{ 'rotate-180': open }"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </span>
+                            </a>
+                            <div x-show="open" class="mt-2 space-y-2 px-7" role="menu" aria-label="Authentication">
+                                <!-- active & hover classes 'text-gray-700 dark:text-light' -->
+                                <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
+                                <a href="auth/register.html" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
+                                    Register
+                                </a>
+                                <a href="auth/login.html" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
+                                    Login
+                                </a>
+                                <a href="auth/forgot-password.html" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
+                                    Forgot Password
+                                </a>
+                                <a href="auth/reset-password.html" role="menuitem"
+                                    class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
+                                    Reset Password
+                                </a>
+                            </div>
+                        </div>
+
+
+                    </nav>
+                </div>
+                </header>
+
+                
+
+                {% block content %}{% endblock %}
+
+                <!-- Main footer -->
+                <footer
+                    class="flex items-center justify-between p-4 bg-white border-t dark:bg-darker dark:border-primary-darker">
+                    <div>@Q Travel and Tours Skardu &copy;</div>
+
+                </footer>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- All javascript code in this project for now is just for demo DON'T RELY ON IT  -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.bundle.min.js"></script>
+    <!-- <script src="{% static 'js/script.js' %}"></script> -->
+    <script>
+        const setup = () => {
+            const getTheme = () => {
+                if (window.localStorage.getItem('dark')) {
+                    return JSON.parse(window.localStorage.getItem('dark'))
+                }
+
+                return !!window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            }
+
+            const setTheme = (value) => {
+                window.localStorage.setItem('dark', value)
+            }
+
+            const getColor = () => {
+                if (window.localStorage.getItem('color')) {
+                    return window.localStorage.getItem('color')
+                }
+                return 'cyan'
+            }
+
+            const setColors = (color) => {
+                const root = document.documentElement
+                root.style.setProperty('--color-primary', `var(--color-${color})`)
+                root.style.setProperty('--color-primary-50', `var(--color-${color}-50)`)
+                root.style.setProperty('--color-primary-100', `var(--color-${color}-100)`)
+                root.style.setProperty('--color-primary-light', `var(--color-${color}-light)`)
+                root.style.setProperty('--color-primary-lighter', `var(--color-${color}-lighter)`)
+                root.style.setProperty('--color-primary-dark', `var(--color-${color}-dark)`)
+                root.style.setProperty('--color-primary-darker', `var(--color-${color}-darker)`)
+                this.selectedColor = color
+                window.localStorage.setItem('color', color)
+                //
+            }
+
+            const updateBarChart = (on) => {
+                const data = {
+                    data: randomData(),
+                    backgroundColor: 'rgb(207, 250, 254)',
+                }
+                if (on) {
+                    barChart.data.datasets.push(data)
+                    barChart.update()
+                } else {
+                    barChart.data.datasets.splice(1)
+                    barChart.update()
+                }
+            }
+
+            const updateDoughnutChart = (on) => {
+                const data = random()
+                const color = 'rgb(207, 250, 254)'
+                if (on) {
+                    doughnutChart.data.labels.unshift('Seb')
+                    doughnutChart.data.datasets[0].data.unshift(data)
+                    doughnutChart.data.datasets[0].backgroundColor.unshift(color)
+                    doughnutChart.update()
+                } else {
+                    doughnutChart.data.labels.splice(0, 1)
+                    doughnutChart.data.datasets[0].data.splice(0, 1)
+                    doughnutChart.data.datasets[0].backgroundColor.splice(0, 1)
+                    doughnutChart.update()
+                }
+            }
+
+            const updateLineChart = () => {
+                lineChart.data.datasets[0].data.reverse()
+                lineChart.update()
+            }
+
+            return {
+                loading: true,
+                isDark: getTheme(),
+                toggleTheme() {
+                    this.isDark = !this.isDark
+                    setTheme(this.isDark)
+                },
+                setLightTheme() {
+                    this.isDark = false
+                    setTheme(this.isDark)
+                },
+                setDarkTheme() {
+                    this.isDark = true
+                    setTheme(this.isDark)
+                },
+                color: getColor(),
+                selectedColor: 'cyan',
+                setColors,
+                toggleSidbarMenu() {
+                    this.isSidebarOpen = !this.isSidebarOpen
+                },
+
+                isMobileSubMenuOpen: true,
+                openMobileSubMenu() {
+                    this.isMobileSubMenuOpen = true
+                    this.$nextTick(() => {
+                        this.$refs.mobileSubMenu.focus()
+                    })
+                },
+                isMobileMainMenuOpen: false,
+                openMobileMainMenu() {
+                    this.isMobileMainMenuOpen = true
+                    this.$nextTick(() => {
+                        this.$refs.mobileMainMenu.focus()
+                    })
+                },
+                updateBarChart,
+                updateDoughnutChart,
+                updateLineChart,
+            }
+        }
+    </script>
 </body>
 
 </html>

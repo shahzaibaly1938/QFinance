@@ -1,8 +1,15 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Q Finance</title>
+   <link rel="stylesheet" href="{% static 'dist/style.css' %}" />
+</head>
+<body>
+  
 
-{% block title %}Login | Q Travel Finance{% endblock %}
-
-{% block content %}
 
 <div class="min-h-screen flex items-center justify-center bg-gray-100" style="background: linear-gradient(135deg, #f8fafc 0%, #e5e9f2 100%);">
   <div class="w-full max-w-md bg-[#fdfdfb] rounded-2xl shadow-xl px-8 py-10 flex flex-col gap-8">
@@ -48,4 +55,5 @@
     </form>
   </div>
 </div>
-{% endblock %}
+</body>
+</html>
