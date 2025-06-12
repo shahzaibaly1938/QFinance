@@ -34,7 +34,7 @@
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight From:</label>
-      <select name="destination" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+      <select name="flight_from" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
         <option value="">All</option>
         {% for dest in destinations %}
           <option value="{{ dest.id }}">{{ dest.name }}</option>
@@ -43,7 +43,7 @@
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight To:</label>
-      <select name="destination" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+      <select name="flight_to" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
         <option value="">All</option>
         {% for dest in destinations %}
           <option value="{{ dest.id }}">{{ dest.name }}</option>
@@ -95,9 +95,9 @@
           </td>
           <td class="px-4 py-2">PKR {{ ticket.amount }}</td>
           <td class="px-4 py-2 text-center">
-            <a href="" class="text-[var(--primary-dark)] hover:underline font-semibold">View</a>
-            <a href="" class="ml-2 text-blue-600 hover:underline font-semibold">Edit</a>
-            <a href="" class="ml-2 text-red-600 hover:underline font-semibold">Delete</a>
+            <a href="{% url 'ticket_detail' ticket.id %}" class="text-[var(--primary-dark)] hover:underline font-semibold">View</a>
+            <a href="{% url 'edit_ticket' ticket.id %}" class="ml-2 text-blue-600 hover:underline font-semibold">Edit</a>
+            <a href="{% url 'delete_ticket' ticket.id %}" class="ml-2 text-red-600 hover:underline font-semibold">Delete</a>
           </td>
         </tr>
         {% empty %}

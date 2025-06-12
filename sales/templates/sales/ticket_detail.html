@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %} Ticket Details | Q Finance {% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-8 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Ticket Details</h1>
+  <div class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 mb-8">
+    <table class="w-full text-left mb-4">
+      <tbody>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Ticket ID:</th>
+          <td class="py-2">{{ ticket.id }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">PNR:</th>
+          <td class="py-2">{{ ticket.pnr }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Customer:</th>
+          <td class="py-2">{{ ticket.customer.name }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Agent:</th>
+          <td class="py-2">{{ ticket.agent.user.username }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Airline:</th>
+          <td class="py-2">{{ ticket.airline.name }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Amount:</th>
+          <td class="py-2">PKR {{ ticket.amount }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Reserve Date:</th>
+          <td class="py-2">{{ ticket.reserve_date|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Flight Date:</th>
+          <td class="py-2">{{ ticket.flight_date|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Flight From:</th>
+          <td class="py-2">{{ ticket.flight_from.name }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Flight To:</th>
+          <td class="py-2">{{ ticket.flight_to.name }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Reference:</th>
+          <td class="py-2">{{ ticket.reference }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Payment Status:</th>
+          <td class="py-2">
+            {% if ticket.paid == 'paid' %}
+              <span class="inline-block px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Paid</span>
+            {% else %}
+              <span class="inline-block px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">Unpaid</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Notes:</th>
+          <td class="py-2">{{ ticket.notes }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="border-t border-[var(--primary)] pt-4 mt-4">
+      <h2 class="text-lg font-semibold text-[var(--primary-dark)] mb-2">Related Details</h2>
+      <ul class="list-disc pl-6 text-[var(--primary-dark)]">
+        <li>Customer Contact: {{ ticket.customer.phone|default:"N/A" }}</li>
+        <li>Agent Email: {{ ticket.agent.user.email|default:"N/A" }}</li>
+        <li>Airline: {{ ticket.airline.name }}</li>
+        <li>Destination : From - {{ ticket.flight_from.name }} | To - {{ ticket.flight_to.name }}</li>
+        <!-- Add more related info as needed -->
+      </ul>
+    </div>
+  </div>
+  <div class="flex gap-2">
+    <a href="{% url 'edit_ticket' ticket.id %}" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Edit</a>
+    <a href="{% url 'ticket_sale' %}" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition">Back to Tickets</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Ticketsale, Destination, Airline
 from customers.models import Customer
 from users.models import Agent
@@ -21,7 +21,37 @@ def ticket_sale(request):
 
 def add_ticket(request):
     if request.method == 'POST':
-        pass
+        customer = request.POST.get('customer')
+        agent = request.POST.get('agent')
+        pnr = request.POST.get('pnr')
+        airline = request.POST.get('airline')
+        amount = request.POST.get('amount')
+        reserve_date = request.POST.get('reserve_date')
+        flight_date = request.POST.get('flight_date')
+        flight_from = request.POST.get('flight_from')
+        flight_to = request.POST.get('flight_to')
+        reference = request.POST.get('reference')
+        payment = request.POST.get('payment')
+        notes = request.POST.get('notes')
+
+        ticket = Ticketsale(
+            customer=Customer.objects.get(id=customer),
+            agent = Agent.objects.get(id=agent),
+            pnr = pnr,
+            airline = Airline.objects.get(id=airline),
+            amount = amount,
+            reserve_date = reserve_date,
+            flight_date = flight_date,
+            flight_from = Destination.objects.get(id=flight_from),
+            flight_to = Destination.objects.get(id=flight_to),
+            reference = reference,
+            paid = payment,
+            notes = notes,
+            )
+        ticket.save()
+        return redirect('ticket_sale')
+        
+
     customers = Customer.objects.all()
     agents = Agent.objects.all()
     destinations = Destination.objects.all()
@@ -34,3 +64,62 @@ def add_ticket(request):
         'airlines':airlines,
     }
     return render(request, 'sales/add_ticket.html', context)
+
+
+def ticket_detail(request, id):
+    ticket = Ticketsale.objects.get(id=id)
+    return render(request, 'sales/ticket_detail.html', {'ticket':ticket})
+
+def delete_ticket(request, id):
+    ticket = Ticketsale.objects.get(id=id)
+    ticket.delete()
+    return redirect('ticket_sale')
+
+def edit_ticket(request, id):
+    if request.method == 'POST':
+        customer = request.POST.get('customer')
+        agent = request.POST.get('agent')
+        pnr = request.POST.get('pnr')
+        airline = request.POST.get('airline')
+        amount = request.POST.get('amount')
+        reserve_date = request.POST.get('reserve_date')
+        flight_date = request.POST.get('flight_date')
+        flight_from = request.POST.get('flight_from')
+        flight_to = request.POST.get('flight_to')
+        reference = request.POST.get('reference')
+        payment = request.POST.get('payment')
+        notes = request.POST.get('notes')
+
+        ticket = Ticketsale.objects.get(id=id)
+    
+        ticket.customer=Customer.objects.get(id=customer)
+        ticket.agent = Agent.objects.get(id=agent)
+        ticket.pnr = pnr
+        ticket.airline = Airline.objects.get(id=airline)
+        ticket.amount = amount
+        ticket.reserve_date = reserve_date
+        ticket.flight_date = flight_date
+        ticket.flight_from = Destination.objects.get(id=flight_from)
+        ticket.flight_to = Destination.objects.get(id=flight_to)
+        ticket.reference = reference
+        ticket.paid = payment
+        ticket.notes = notes
+
+        ticket.save()
+
+        return redirect('ticket_sale')
+
+    ticket = Ticketsale.objects.get(id=id)
+    customers = Customer.objects.all()
+    agents = Agent.objects.all()
+    destinations = Destination.objects.all()
+    airlines = Airline.objects.all()
+
+    context = {
+        'customers':customers,
+        'agents':agents,
+        'destinations':destinations,
+        'airlines':airlines,
+        'ticket':ticket,
+    }
+    return render(request, 'sales/edit_ticket.html', context)

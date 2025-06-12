@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %} Edit Ticket | Q Finance {% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-8 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Edit Ticket</h1>
+  <form method="post" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 space-y-6">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Customer -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
+        <div class="flex gap-2">
+          <select name="customer" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+            <option value="">Select Customer</option>
+            {% for customer in customers %}
+              <option value="{{ customer.id }}" {% if ticket.customer.id == customer.id %}selected{% endif %}>{{ customer.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+        </div>
+      </div>
+      <!-- Agent -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent</label>
+        <div class="flex gap-2">
+          <select name="agent" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+            <option value="">Select Agent</option>
+            {% for agent in agents %}
+              <option value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}selected{% endif %}>{{ agent.user.username }}</option>
+            {% endfor %}
+          </select>
+          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+        </div>
+      </div>
+      <!-- PNR -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">PNR</label>
+        <input type="text" name="pnr" value="{{ ticket.pnr }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+      </div>
+      <!-- Airline -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Airline</label>
+        <div class="flex gap-2">
+          <select name="airline" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+            <option value="">Select Airline</option>
+            {% for airline in airlines %}
+              <option value="{{ airline.id }}" {% if ticket.airline.id == airline.id %}selected{% endif %}>{{ airline.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+        </div>
+      </div>
+      <!-- Amount -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Amount</label>
+        <input type="number" name="amount" step="0.01" value="{{ ticket.amount }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+      </div>
+      <!-- Reserve Date -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Reserve Date</label>
+        <input type="date" name="reserve_date" value="{{ ticket.reserve_date|date:'Y-m-d' }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]" />
+      </div>
+      <!-- Flight Date -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight Date</label>
+        <input type="date" name="flight_date" value="{{ ticket.flight_date|date:'Y-m-d' }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+      </div>
+      <!-- Flight From -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight From</label>
+        <div class="flex gap-2">
+          <select name="flight_from" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+            <option value="">Select Origin</option>
+            {% for dest in destinations %}
+              <option value="{{ dest.id }}" {% if ticket.flight_from.id == dest.id %}selected{% endif %}>{{ dest.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+        </div>
+      </div>
+      <!-- Flight To -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight To</label>
+        <div class="flex gap-2">
+          <select name="flight_to" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+            <option value="">Select Destination</option>
+            {% for dest in destinations %}
+              <option value="{{ dest.id }}" {% if ticket.flight_to.id == dest.id %}selected{% endif %}>{{ dest.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var,--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+        </div>
+      </div>
+      <!-- Reference -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Reference</label>
+        <input type="text" name="reference" value="{{ ticket.reference }}" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+      </div>
+      <!-- Paid -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Payment Status</label>
+        <select name="payment" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+          <option value="paid" {% if ticket.paid == 'paid' %}selected{% endif %}>Paid</option>
+          <option value="unpaid" {% if ticket.paid == 'unpaid' %}selected{% endif %}>Unpaid</option>
+        </select>
+      </div>
+      <div>
+                <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')"
+                    class="px-3 py-2 mt-7 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+
+                    Add payment</button>
+            </div>
+    </div>
+    <!-- Notes -->
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">Notes</label>
+      <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">{{ ticket.notes }}</textarea>
+    </div>
+    <div class="flex justify-end">
+      <button type="submit" class="px-6 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Update Ticket</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
