@@ -8,20 +8,21 @@
     <form method="post" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 space-y-6">
         {% csrf_token %}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Customer -->
+            <!-- Customer (searchable select) -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
                 <div class="flex gap-2">
                     <select name="customer" required
-                        class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+                        class="flex-1  px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"
+                        id="customerSelect">
                         <option value="">Select Customer</option>
                         {% for customer in customers %}
                         <option value="{{ customer.id }}">{{ customer.name }}</option>
                         {% endfor %}
                     </select>
                     <button type="button"
-                        onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')"
-                        class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+                        onclick="window.open('{% url 'add_customers' %}', '_blank', 'width=500,height=600')"
+                        class="px-3 py-2 h-12 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
                 </div>
             </div>
             <!-- Agent -->
@@ -36,7 +37,7 @@
                         {% endfor %}
                     </select>
                     <button type="button"
-                        onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')"
+                        onclick="window.open('{% url 'add_agents' %}', '_blank', 'width=500,height=600')"
                         class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
                 </div>
             </div>
@@ -58,7 +59,7 @@
                         {% endfor %}
                     </select>
                     <button type="button"
-                        onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')"
+                        onclick="window.open('{% url 'add_airline' %}', '_blank', 'width=500,height=600')"
                         class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
                 </div>
             </div>
@@ -92,7 +93,7 @@
                         {% endfor %}
                     </select>
                     <button type="button"
-                        onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')"
+                        onclick="window.open('{% url 'add_destination' %}', '_blank', 'width=500,height=600')"
                         class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
                 </div>
             </div>
@@ -108,7 +109,7 @@
                         {% endfor %}
                     </select>
                     <button type="button"
-                        onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')"
+                        onclick="window.open('{% url 'add_destination' %}', '_blank', 'width=500,height=600')"
                         class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
                 </div>
             </div>
@@ -128,7 +129,7 @@
                 </select>
             </div>
             <div>
-                <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')"
+                <button type="button" onclick="window.open('{% url 'add_payment' %}', '_blank', 'width=500,height=600')"
                     class="px-3 py-2 mt-7 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+
                     Add payment</button>
             </div>
@@ -146,4 +147,22 @@
         </div>
     </form>
 </div>
+<!-- Make select searchable using Choices.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const customerSelect = document.getElementById('customerSelect');
+    if (customerSelect) {
+        new Choices(customerSelect, {
+            searchEnabled: true,
+            itemSelectText: '',
+            shouldSort: false,
+            placeholder: true,
+            searchPlaceholderValue: 'Search customer...',
+            
+        });
+    }
+});
+</script>
 {% endblock %}

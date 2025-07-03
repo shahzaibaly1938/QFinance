@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Ticketsale, Destination, Airline
 from customers.models import Customer
 from users.models import Agent
+from django.contrib import messages
 
 # Create your views here.
 def ticket_sale(request):
@@ -73,6 +74,7 @@ def ticket_detail(request, id):
 def delete_ticket(request, id):
     ticket = Ticketsale.objects.get(id=id)
     ticket.delete()
+    messages.success(request, f'Ticket: {ticket.pnr} of {ticket.customer.name} is deleted successfully!')
     return redirect('ticket_sale')
 
 def edit_ticket(request, id):
@@ -123,3 +125,22 @@ def edit_ticket(request, id):
         'ticket':ticket,
     }
     return render(request, 'sales/edit_ticket.html', context)
+
+
+def add_airline(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        airline = Airline(name=name)
+        airline.save()
+        messages.success(request, 'Airline added successfully!')
+        return redirect('add_airline')
+    return render(request, 'sales/add_airlines.html')
+
+def add_destination(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        destination = Destination(name=name)
+        destination.save()
+        messages.success(request, 'Destination added successfully!')
+        return redirect('add_destination')
+    return render(request, 'sales/add_destinations.html')

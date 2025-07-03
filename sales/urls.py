@@ -7,4 +7,6 @@ urlpatterns = [
     path('ticket-detail/<int:id>/', views.ticket_detail, name='ticket_detail'),                
     path('edit-ticket/<int:id>/', views.edit_ticket, name='edit_ticket'),                
     path('delete-ticket/<int:id>/', views.delete_ticket, name='delete_ticket'),
+    path('add-airlines/', views.add_airline, name='add_airline'),
+    path('add-destination/', views.add_destination, name='add_destination'),
 ]

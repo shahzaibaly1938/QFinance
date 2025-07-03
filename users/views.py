@@ -57,6 +57,8 @@ def add_user(request):
 
     return render(request, 'user/add_user.html')
 
+def add_agents(request):
+    return render(request, 'user/add_agents.html')
 
 def logout(request):
     auth_logout(request)

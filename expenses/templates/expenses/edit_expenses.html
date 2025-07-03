@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %} Edit Expense | Q Finance {% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-8 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Edit Expense</h1>
+  <form method="post" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 space-y-6">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Category -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Category</label>
+        <select name="category" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+          <option value="">Select Category</option>
+          {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if expense.category.id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <!-- Amount -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Amount</label>
+        <input type="number" name="amount" step="0.01" value="{{ expense.amount }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+      </div>
+      <!-- Date -->
+      <div>
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Date</label>
+        <input type="date" name="date" value="{{ expense.date|date:'Y-m-d' }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+      </div>
+      <!-- Description -->
+      <div class="md:col-span-2">
+        <label class="block text-[var(--primary-dark)] font-medium mb-1">Description</label>
+        <textarea name="description" rows="3" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">{{ expense.description }}</textarea>
+      </div>
+    </div>
+    <div class="flex justify-between">
+        <a href="{% url 'expenses_list' %}" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition">Back to Expenses</a>
+      <button type="submit" class="px-6 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Update Expense</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

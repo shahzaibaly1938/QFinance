@@ -16,6 +16,7 @@
     </style>
 </head>
 <body class="bg-[var(--background)] min-h-screen flex">
+    {% include 'components/messages.html' %}
     <!-- Sidebar -->
     <aside class="w-64 min-h-screen bg-[var(--primary-dark)] flex flex-col py-8 px-4 shadow-lg
                   fixed md:static z-30 transition-transform duration-300 md:translate-x-0 -translate-x-full "
@@ -26,7 +27,7 @@
         <nav class="flex-1 space-y-2">
             <a href="{% url 'dashboard' %}" class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'dashboard' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Dashboard</a>
             <a href="{% url 'ticket_sale' %}" class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'ticket_sale' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Ticket Sales</a>
-            <a href="" class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'expenses' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Expenses</a>
+            <a href="{% url 'expenses_list' %}" class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'expenses' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Expenses</a>
             <a href="" class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'reports' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Reports</a>
             <a href="{% url 'add_user' %}" class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'add_user' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Add User</a>
             <a href="{% url 'logout' %}" class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold">Logout</a>

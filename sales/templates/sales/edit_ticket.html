@@ -117,7 +117,8 @@
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Notes</label>
       <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">{{ ticket.notes }}</textarea>
     </div>
-    <div class="flex justify-end">
+    <div class="flex justify-between">
+      <a href="{% url 'ticket_sale' %}" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Back to Tickets</a>
       <button type="submit" class="px-6 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Update Ticket</button>
     </div>
   </form>
