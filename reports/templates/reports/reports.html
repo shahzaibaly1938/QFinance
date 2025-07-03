@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Reports | Q Finance{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Reports</h1>
+  
+  <!-- Filters -->
+  <form method="get" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-4 mb-8 flex flex-wrap gap-4 items-end justify-center">
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
+      <select name="customer" class="w-48 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+        <option value="">All Customers</option>
+        {% for customer in customers %}
+        <option value="{{ customer.id }}">{{ customer.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">From</label>
+      <input type="date" name="start_date" class="w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+    </div>
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">To</label>
+      <input type="date" name="end_date" class="w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+    </div>
+    <button type="submit" class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
+  </form>
+
+  <!-- Payments Table -->
+  <div class="overflow-x-auto bg-white rounded-xl shadow mb-8">
+    <table class="min-w-full divide-y divide-[var(--secondary)]">
+      <thead class="bg-[var(--primary)]">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">#</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Customer</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Amount</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Method</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Date</th>
+          <th class="px-4 py-3 text-center text-xs font-semibold text-[var(--primary-dark)] uppercase">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-[var(--secondary)]">
+        {% for payment in payments %}
+        <tr>
+          <td class="px-4 py-2">{{ forloop.counter }}</td>
+          <td class="px-4 py-2">{{ payment.customer.name }}</td>
+          <td class="px-4 py-2">PKR {{ payment.amount }}</td>
+          <td class="px-4 py-2">{{ payment.method|title }}</td>
+          <td class="px-4 py-2">{{ payment.date|date:"Y-m-d" }}</td>
+          <td class="px-4 py-2 text-center">
+            <a href="{% url 'generate_invoice' payment.customer.id %}" class="text-blue-600 hover:underline font-semibold">Invoice</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="px-4 py-6 text-center text-[var(--primary-dark)]">No payments found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Summary Section -->
+  <div class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 mb-8">
+    <h2 class="text-xl font-semibold text-[var(--primary-dark)] mb-4">Summary</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-lg shadow p-4">
+        <div class="text-[var(--primary-dark)] font-medium">Total Amount Paid</div>
+        <div class="text-2xl font-bold mt-2">PKR {{ total_payments }}</div>
+      </div><br>
+      <div class="bg-white rounded-lg shadow p-4">
+        <div class="text-[var(--primary-dark)] font-medium">Total Customers</div>
+        <div class="text-2xl font-bold mt-2">{{ total_customer }}</div>
+      </div><br>
+      <div class="bg-white rounded-lg shadow p-4">
+        <div class="text-[var(--primary-dark)] font-medium">Total Payments</div>
+        <div class="text-2xl font-bold mt-2">{{ total_invoice_generated }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

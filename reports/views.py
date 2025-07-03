@@ -4,9 +4,26 @@ from sales.models import Ticketsale
 from payments.models import Payment
 from django.http import HttpResponse
 from xhtml2pdf import pisa
+from django.db.models import Sum
 from django.template.loader import get_template
 import openpyxl
 # Create your views here.
+
+def reports(request):
+    customers = Customer.objects.all()
+    payments = Payment.objects.all()
+    total_payments = payments.aggregate(total_amount=Sum('amount'))['total_amount'] or 0
+    total_invoice_generated = Ticketsale.objects.count()
+    total_customer = customers.count()
+    context = {
+        'customers': customers,
+        'payments': payments,
+        'total_payments': total_payments,
+        'total_invoice_generated': total_invoice_generated,
+        'total_customer': total_customer,
+    }
+    return render(request, 'reports/reports.html', context)
+
 
 def customer_ledger(request, customer_id):
     customer = get_object_or_404(Customer, id=customer_id)
