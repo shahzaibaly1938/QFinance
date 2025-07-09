@@ -3,6 +3,7 @@ from django.db.models import Sum
 from django.utils.timezone import now
 from sales.models import Ticketsale
 from expenses.models import Expense
+from payments.models import Payment
 from users.models import Agent
 from customers.models import Customer
 from django.db.models.functions import TruncMonth
@@ -22,31 +23,41 @@ def dashboard(request):
     end_date = request.GET.get('end_date')
 
     sales = Ticketsale.objects.all()
+    payment = Payment.objects.all()
 
     if agent_id:
         sales = sales.filter(agent_id=agent_id)
 
     if customer_id:
         sales = sales.filter(customer_id=customer_id)
+        payment = payment.filter(customer_id=customer_id)
 
     if start_date and end_date: 
         sales = sales.filter(reserve_date__range=[start_date, end_date])
+        payment = payment.filter(date__range=[start_date, end_date])
 
     else:
         sales = sales.filter(reserve_date__year=current_year, reserve_date__month = current_month)
+        payment = payment.filter(date__year=current_year, date__month = current_month)
 
     total_sales_amount = sales.aggregate(total=Sum('amount'))['total'] or 0
+    total_payment_amount = payment.aggregate(total=Sum('amount'))['total'] or 0
     total_tickets = sales.count()
 
     monthly_expense = Expense.objects.filter(date__year=current_year, date__month=current_month)
 
     total_expense = monthly_expense.aggregate(total=Sum('amount'))['total'] or 0
   
-    agent = Agent.objects.get(user=request.user)
-    commission_rate = agent.commission_rate
-    total_commission = total_sales_amount * commission_rate
+    # agent = Agent.objects.get(user=request.user)
+    # commission_rate = agent.commission_rate
+    total_commission = sales.aggregate(total=Sum('commission'))['total'] or 0
     total_profit = total_commission - total_expense
+    recover_payment = total_sales_amount - total_payment_amount
 
+    # Calculate total commission of unpaid tickets
+    unpaid_commission = sales.filter(paid='unpaid').aggregate(total=Sum('commission'))['total'] or 0
+    # Total amount in account is total profit minus unpaid commissions
+    in_account = total_profit - unpaid_commission
 
     # Add this to your dashboard view
     monthly_sales_data = (
@@ -68,13 +79,15 @@ def dashboard(request):
 
 
     context = {
-        'agents': Agent.objects.all(),
+        # 'agents': Agent.objects.all(),
         'customers': Customer.objects.all(),
         'total_sales':total_sales_amount,
         'total_tickets':total_tickets,
         'total_expense':total_expense,
+        'recover_payment':recover_payment,
         'total_commission':total_commission,
         'total_profit':total_profit,
+        'in_account':in_account,
         'months': months,
         'sales': sales,
     }

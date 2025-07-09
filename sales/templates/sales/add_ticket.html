@@ -32,8 +32,8 @@
                     <select name="agent" required
                         class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
                         <option value="">Select Agent</option>
-                        {% for agent in agents %}
-                        <option value="{{ agent.id }}">{{ agent.user.username }}</option>
+                        {% for agent in commission_agent %}
+                        <option value="{{ agent.id }}">{{ agent.commission_agent }}</option>
                         {% endfor %}
                     </select>
                     <button type="button"

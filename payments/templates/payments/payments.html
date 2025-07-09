@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Payments | Q Finance{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 px-4 md:px-8">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+    <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Payments</h1>
+    <a href="{% url 'add_payment' %}">
+      <button class="bg-[var(--primary-dark)] text-[var(--secondary)] px-5 py-2 rounded-lg font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
+        + Add Payment
+      </button>
+    </a>
+  </div>
+
+  <!-- Filters (optional, remove if not needed) -->
+  <form method="get" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-4 mb-8 flex flex-wrap gap-4 items-end justify-center">
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
+      <select name="customer" class="w-48 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+        <option value="">All Customers</option>
+        {% for customer in customers %}
+        <option value="{{ customer.id }}" {% if request.GET.customer == customer.id|stringformat:"s" %}selected{% endif %}>{{ customer.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">From</label>
+      <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+    </div>
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">To</label>
+      <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+    </div>
+    <button type="submit" class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
+  </form>
+
+  <!-- Payments Table -->
+  <div class="overflow-x-auto bg-white rounded-xl shadow">
+    <table class="min-w-full divide-y divide-[var(--secondary)]">
+      <thead class="bg-[var(--primary)]">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">#</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Customer</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Amount</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Method</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Date</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Notes</th>
+          <th class="px-4 py-3 text-center text-xs font-semibold text-[var(--primary-dark)] uppercase">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-[var(--secondary)]">
+        {% for payment in payments %}
+        <tr class="hover:bg-[var(--secondary)] transition cursor-pointer" onclick="window.location='{% url 'payment_detail' payment.id %}'">
+          <td class="px-4 py-2">{{ forloop.counter0|add:payments.start_index }}</td>
+          <td class="px-4 py-2">{{ payment.customer.name }}</td>
+          <td class="px-4 py-2">PKR {{ payment.amount }}</td>
+          <td class="px-4 py-2">{{ payment.method|title }}</td>
+          <td class="px-4 py-2">{{ payment.date|date:"Y-m-d" }}</td>
+          <td class="px-4 py-2">{{ payment.notes }}</td>
+          <td class="px-4 py-2 text-center">
+            <a href="{% url 'payment_detail' payment.id %}" class="text-[var(--primary-dark)] hover:underline font-semibold" onclick="event.stopPropagation();">View</a>
+            <a href="{% url 'edit_payment' payment.id %}" class="ml-2 text-blue-600 hover:underline font-semibold" onclick="event.stopPropagation();">Edit</a>
+            <a href="" class="ml-2 text-red-600 hover:underline font-semibold" onclick="event.stopPropagation();">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="px-4 py-6 text-center text-[var(--primary-dark)]">No payments found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if payments.has_other_pages %}
+  <div class="flex justify-center mt-6">
+    <nav class="inline-flex rounded-md shadow-sm" aria-label="Pagination">
+      {% if payments.has_previous %}
+        <a href="?page={{ payments.previous_page_number }}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+          class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Previous</a>
+      {% else %}
+        <span class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Previous</span>
+      {% endif %}
+      {% for num in payments.paginator.page_range %}
+        {% if payments.number == num %}
+          <span class="px-3 py-2 border-t border-b border-[var(--primary)] bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold">{{ num }}</span>
+        {% elif num > payments.number|add:'-3' and num < payments.number|add:'3' %}
+          <a href="?page={{ num }}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+            class="px-3 py-2 border-t border-b border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if payments.has_next %}
+        <a href="?page={{ payments.next_page_number }}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+          class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Next</a>
+      {% else %}
+        <span class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Next</span>
+      {% endif %}
+    </nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

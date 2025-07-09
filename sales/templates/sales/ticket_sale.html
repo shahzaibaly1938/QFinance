@@ -107,6 +107,35 @@
         {% endfor %}
       </tbody>
     </table>
+  </div> <br>
+  
+  <!-- Pagination -->
+  {% if tickets.has_other_pages %}
+  <div class="flex justify-center mt-6">
+    <nav class="inline-flex rounded-md shadow-sm" aria-label="Pagination">
+      {% if tickets.has_previous %}
+        <a href="?page={{ tickets.previous_page_number }}{% if request.GET.agent %}&agent={{ request.GET.agent }}{% endif %}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.flight_from %}&flight_from={{ request.GET.flight_from }}{% endif %}{% if request.GET.flight_to %}&flight_to={{ request.GET.flight_to }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+          class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Previous</a>
+      {% else %}
+        <span class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Previous</span>
+      {% endif %}
+      {% for num in tickets.paginator.page_range %}
+        {% if tickets.number == num %}
+          <span class="px-3 py-2 border-t border-b border-[var(--primary)] bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold">{{ num }}</span>
+        {% elif num > tickets.number|add:'-3' and num < tickets.number|add:'3' %}
+          <a href="?page={{ num }}{% if request.GET.agent %}&agent={{ request.GET.agent }}{% endif %}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.flight_from %}&flight_from={{ request.GET.flight_from }}{% endif %}{% if request.GET.flight_to %}&flight_to={{ request.GET.flight_to }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+            class="px-3 py-2 border-t border-b border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if tickets.has_next %}
+        <a href="?page={{ tickets.next_page_number }}{% if request.GET.agent %}&agent={{ request.GET.agent }}{% endif %}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.flight_from %}&flight_from={{ request.GET.flight_from }}{% endif %}{% if request.GET.flight_to %}&flight_to={{ request.GET.flight_to }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+          class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Next</a>
+      {% else %}
+        <span class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Next</span>
+      {% endif %}
+    </nav>
   </div>
+  {% endif %}
+
 </div>
 {% endblock %}

@@ -1,15 +1,19 @@
 from django.shortcuts import render, redirect
 from .models import Expense, Expense_category
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 # Create your views here.
 def expenses_list(request):
     expense_category = Expense_category.objects.all()
-    expenses = Expense.objects.all()
+    expenses = Expense.objects.all().order_by('-date')
+    paginator = Paginator(expenses, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'categories':expense_category,
-        'expenses':expenses,
+        'expenses': page_obj,
     }
     return render(request, 'expenses/expenses_list.html', context)
 

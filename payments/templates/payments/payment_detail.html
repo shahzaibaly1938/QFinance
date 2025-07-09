@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %} Payment Details | Q Finance {% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-8 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Payment Details</h1>
+  <div class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 mb-8">
+    <table class="w-full text-left mb-4">
+      <tbody>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Payment ID:</th>
+          <td class="py-2">{{ payment.id }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Customer:</th>
+          <td class="py-2">{{ payment.customer.name }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Amount:</th>
+          <td class="py-2">PKR {{ payment.amount }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Method:</th>
+          <td class="py-2">{{ payment.method|title }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Date:</th>
+          <td class="py-2">{{ payment.date|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Notes:</th>
+          <td class="py-2">{{ payment.notes }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="flex gap-2 mt-4">
+      <a href="{% url 'edit_payment' payment.id %}" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Edit</a>
+      <a href="{% url 'payments' %}" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition">Back to Payments</a>
+    </div>
+  </div>
+  </div>
+  {% endblock %}

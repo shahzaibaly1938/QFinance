@@ -3,16 +3,21 @@ from .models import Ticketsale, Destination, Airline
 from customers.models import Customer
 from users.models import Agent
 from django.contrib import messages
+from django.core.paginator import Paginator
+from decimal import Decimal
 
 # Create your views here.
 def ticket_sale(request):
-    tickets = Ticketsale.objects.all()
+    tickets = Ticketsale.objects.all().order_by('-reserve_date')
+    paginator = Paginator(tickets, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     customers = Customer.objects.all()
     agents = Agent.objects.all()
     destinations = Destination.objects.all()
 
     context = {
-        'tickets':tickets,
+        'tickets':page_obj,
         'customers':customers,
         'agents':agents,
         'destinations':destinations,
@@ -23,7 +28,7 @@ def ticket_sale(request):
 def add_ticket(request):
     if request.method == 'POST':
         customer = request.POST.get('customer')
-        agent = request.POST.get('agent')
+        commission_agent = request.POST.get('agent')
         pnr = request.POST.get('pnr')
         airline = request.POST.get('airline')
         amount = request.POST.get('amount')
@@ -35,32 +40,35 @@ def add_ticket(request):
         payment = request.POST.get('payment')
         notes = request.POST.get('notes')
 
+        agent = Agent.objects.get(id=commission_agent)
+
+        amount_decimal = Decimal(amount)
         ticket = Ticketsale(
             customer=Customer.objects.get(id=customer),
-            agent = Agent.objects.get(id=agent),
-            pnr = pnr,
-            airline = Airline.objects.get(id=airline),
-            amount = amount,
-            reserve_date = reserve_date,
-            flight_date = flight_date,
-            flight_from = Destination.objects.get(id=flight_from),
-            flight_to = Destination.objects.get(id=flight_to),
-            reference = reference,
-            paid = payment,
-            notes = notes,
-            )
+            commission=amount_decimal * agent.commission_rate,
+            pnr=pnr,
+            airline=Airline.objects.get(id=airline),
+            amount=amount_decimal,
+            reserve_date=reserve_date,
+            flight_date=flight_date,
+            flight_from=Destination.objects.get(id=flight_from),
+            flight_to=Destination.objects.get(id=flight_to),
+            reference=reference,
+            paid=payment,
+            notes=notes,
+        )
         ticket.save()
         return redirect('ticket_sale')
         
 
     customers = Customer.objects.all()
-    agents = Agent.objects.all()
+    commission_agent = Agent.objects.all()
     destinations = Destination.objects.all()
     airlines = Airline.objects.all()
 
     context = {
         'customers':customers,
-        'agents':agents,
+        'commission_agent':commission_agent,
         'destinations':destinations,
         'airlines':airlines,
     }

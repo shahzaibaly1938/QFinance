@@ -6,11 +6,17 @@
 <div class="max-w-7xl mx-auto py-6 px-2 md:px-6">
   <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
     <h1 class="text-2xl font-bold text-[var(--primary-dark)]">Expenses</h1>
+    <div>
+    <a href="{% url 'add_expenses_category' %}">
+      <button class="bg-[var(--primary)] text-[var(--primary-dark)] px-5 py-2 rounded-lg font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
+        + New Expense Category
+      </button>
+    </a>
     <a href="{% url 'add_expenses' %}">
       <button class="bg-[var(--primary-dark)] text-[var(--secondary)] px-5 py-2 rounded-lg font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
         + New Expense
       </button>
-    </a>
+    </a></div>
   </div>
 
   <!-- Filters -->
@@ -70,5 +76,34 @@
       </tbody>
     </table>
   </div>
+<br>
+  <!-- Pagination -->
+  {% if expenses.has_other_pages %}
+  <div class="flex justify-center mt-6">
+    <nav class="inline-flex rounded-md shadow-sm" aria-label="Pagination">
+      {% if expenses.has_previous %}
+        <a href="?page={{ expenses.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+          class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Previous</a>
+      {% else %}
+        <span class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Previous</span>
+      {% endif %}
+      {% for num in expenses.paginator.page_range %}
+        {% if expenses.number == num %}
+          <span class="px-3 py-2 border-t border-b border-[var(--primary)] bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold">{{ num }}</span>
+        {% elif num > expenses.number|add:'-3' and num < expenses.number|add:'3' %}
+          <a href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+            class="px-3 py-2 border-t border-b border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if expenses.has_next %}
+        <a href="?page={{ expenses.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+          class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Next</a>
+      {% else %}
+        <span class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Next</span>
+      {% endif %}
+    </nav>
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}
