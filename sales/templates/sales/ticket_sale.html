@@ -7,58 +7,67 @@
   <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
     <h1 class="text-2xl font-bold text-[var(--primary-dark)]">Ticket Sales</h1>
     <a href="{% url 'add_ticket' %}">
-    <button class="bg-[var(--primary-dark)] text-[var(--secondary)] px-5 py-2 rounded-lg font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
-      + New Ticket
-    </button></a>
+      <button
+        class="bg-[var(--primary-dark)] text-[var(--secondary)] px-5 py-2 rounded-lg font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
+        + New Ticket
+      </button></a>
   </div>
 
   <!-- Filters -->
-  <form method="get" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-4 mb-8 flex flex-wrap gap-4 items-end justify-center">
+  <form method="get"
+    class="bg-[var(--secondary)] rounded-xl shadow px-6 py-4 mb-8 flex flex-wrap gap-4 items-end justify-center">
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent:</label>
-      <select name="agent" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+      <select name="agent"
+        class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
         <option value="">All</option>
         {% for agent in agents %}
-          <option value="{{ agent.id }}">{{ agent.user.username }}</option>
+        <option value="{{ agent.id }}">{{ agent.user.username }}</option>
         {% endfor %}
       </select>
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer:</label>
-      <select name="customer" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+      <select name="customer"
+        class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
         <option value="">All</option>
         {% for customer in customers %}
-          <option value="{{ customer.id }}">{{ customer.name }}</option>
+        <option value="{{ customer.id }}">{{ customer.name }}</option>
         {% endfor %}
       </select>
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight From:</label>
-      <select name="flight_from" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+      <select name="flight_from"
+        class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
         <option value="">All</option>
         {% for dest in destinations %}
-          <option value="{{ dest.id }}">{{ dest.name }}</option>
+        <option value="{{ dest.id }}">{{ dest.name }}</option>
         {% endfor %}
       </select>
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight To:</label>
-      <select name="flight_to" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+      <select name="flight_to"
+        class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
         <option value="">All</option>
         {% for dest in destinations %}
-          <option value="{{ dest.id }}">{{ dest.name }}</option>
+        <option value="{{ dest.id }}">{{ dest.name }}</option>
         {% endfor %}
       </select>
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">From:</label>
-      <input type="date" name="start_date" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"/>
+      <input type="date" name="start_date"
+        class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">To:</label>
-      <input type="date" name="end_date" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"/>
+      <input type="date" name="end_date"
+        class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
     </div>
-    <button type="submit" class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
+    <button type="submit"
+      class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
   </form>
 
   <!-- Tickets Table -->
@@ -78,7 +87,7 @@
       </thead>
       <tbody class="divide-y divide-[var(--secondary)]">
         {% for ticket in tickets %}
-       
+
         <tr>
           <td class="px-4 py-2">{{ ticket.pnr }}</td>
           <td class="px-4 py-2">{{ ticket.agent.user.username }}</td>
@@ -86,18 +95,43 @@
           <td class="px-4 py-2">{{ ticket.flight_from }} to {{ ticket.flight_to }}</td>
           <td class="px-4 py-2">{{ ticket.flight_date|date:"Y-m-d" }}</td>
           <td class="px-4 py-2">
-          
+
             {% if ticket.paid == 'paid' %}
-              <span class="inline-block px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Paid</span>
+            <span
+              class="inline-block px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Paid</span>
             {% else %}
-              <span class="inline-block px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">Due</span>
+            <span class="inline-block px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">Due</span>
             {% endif %}
           </td>
           <td class="px-4 py-2">PKR {{ ticket.amount }}</td>
           <td class="px-4 py-2 text-center">
-            <a href="{% url 'ticket_detail' ticket.id %}" class="text-[var(--primary-dark)] hover:underline font-semibold">View</a>
-            <a href="{% url 'edit_ticket' ticket.id %}" class="ml-2 text-blue-600 hover:underline font-semibold">Edit</a>
-            <a href="{% url 'delete_ticket' ticket.id %}" class="ml-2 text-red-600 hover:underline font-semibold">Delete</a>
+            <a href="{% url 'ticket_detail' ticket.id %}"
+              class="text-[var(--primary-dark)] hover:underline font-semibold">View</a>
+            <a href="{% url 'edit_ticket' ticket.id %}"
+              class="ml-2 text-blue-600 hover:underline font-semibold">Edit</a>
+
+            <!-- Delete Button that triggers the modal -->
+            <button onclick="openModal('{{ ticket.id }}')" class="ml-2 text-red-600 hover:underline font-semibold"
+              onclick="event.stopPropagation();">
+              Delete
+            </button>
+
+            <!-- Delete Confirmation Modal -->
+            <div id="deleteModal-{{ ticket.id }}"
+              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+              <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Confirm Delete</h2>
+                <p class="text-gray-600 mb-6">Are you sure you want to delete this ticket?</p>
+                <div class="flex justify-end space-x-4">
+                  <button onclick="closeModal('{{ ticket.id }}')"
+                    class="px-4 py-2 bg-gray-300 rounded-md">Cancel</button>
+                  <form method="POST" action="{% url 'delete_ticket' ticket.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </div>
           </td>
         </tr>
         {% empty %}
@@ -108,31 +142,36 @@
       </tbody>
     </table>
   </div> <br>
-  
+
   <!-- Pagination -->
   {% if tickets.has_other_pages %}
   <div class="flex justify-center mt-6">
     <nav class="inline-flex rounded-md shadow-sm" aria-label="Pagination">
       {% if tickets.has_previous %}
-        <a href="?page={{ tickets.previous_page_number }}{% if request.GET.agent %}&agent={{ request.GET.agent }}{% endif %}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.flight_from %}&flight_from={{ request.GET.flight_from }}{% endif %}{% if request.GET.flight_to %}&flight_to={{ request.GET.flight_to }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
-          class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Previous</a>
+      <a href="?page={{ tickets.previous_page_number }}{% if request.GET.agent %}&agent={{ request.GET.agent }}{% endif %}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.flight_from %}&flight_from={{ request.GET.flight_from }}{% endif %}{% if request.GET.flight_to %}&flight_to={{ request.GET.flight_to }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+        class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Previous</a>
       {% else %}
-        <span class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Previous</span>
+      <span
+        class="px-3 py-2 rounded-l-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Previous</span>
       {% endif %}
       {% for num in tickets.paginator.page_range %}
-        {% if tickets.number == num %}
-          <span class="px-3 py-2 border-t border-b border-[var(--primary)] bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold">{{ num }}</span>
-        {% elif num > tickets.number|add:'-3' and num < tickets.number|add:'3' %}
-          <a href="?page={{ num }}{% if request.GET.agent %}&agent={{ request.GET.agent }}{% endif %}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.flight_from %}&flight_from={{ request.GET.flight_from }}{% endif %}{% if request.GET.flight_to %}&flight_to={{ request.GET.flight_to }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
-            class="px-3 py-2 border-t border-b border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">{{ num }}</a>
+      {% if tickets.number == num %}
+      <span
+        class="px-3 py-2 border-t border-b border-[var(--primary)] bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold">{{
+        num }}</span>
+      {% elif num > tickets.number|add:'-3' and num < tickets.number|add:'3' %} <a
+        href="?page={{ num }}{% if request.GET.agent %}&agent={{ request.GET.agent }}{% endif %}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.flight_from %}&flight_from={{ request.GET.flight_from }}{% endif %}{% if request.GET.flight_to %}&flight_to={{ request.GET.flight_to }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
+        class="px-3 py-2 border-t border-b border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
+        {{ num }}</a>
         {% endif %}
-      {% endfor %}
-      {% if tickets.has_next %}
+        {% endfor %}
+        {% if tickets.has_next %}
         <a href="?page={{ tickets.next_page_number }}{% if request.GET.agent %}&agent={{ request.GET.agent }}{% endif %}{% if request.GET.customer %}&customer={{ request.GET.customer }}{% endif %}{% if request.GET.flight_from %}&flight_from={{ request.GET.flight_from }}{% endif %}{% if request.GET.flight_to %}&flight_to={{ request.GET.flight_to }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}"
           class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-white text-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Next</a>
-      {% else %}
-        <span class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Next</span>
-      {% endif %}
+        {% else %}
+        <span
+          class="px-3 py-2 rounded-r-lg border border-[var(--primary)] bg-gray-100 text-gray-400 cursor-not-allowed">Next</span>
+        {% endif %}
     </nav>
   </div>
   {% endif %}

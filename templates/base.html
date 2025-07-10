@@ -40,6 +40,8 @@
                 class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'reports' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Reports</a>
             <a href="{% url 'customers' %}"
                 class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'customers' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Customers</a>
+            <a href="{% url 'agents' %}"
+                class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'agents' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Commission Agent</a>
             <a href="{% url 'airlines' %}"
                 class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'airlines' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Airlines</a>
             <a href="{% url 'destinations' %}"

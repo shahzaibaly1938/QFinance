@@ -60,4 +60,7 @@ def edit_payment(request, id):
 
 
 def delete_payment(request, id):
-    pass
+    payment = Payment.objects.get(id=id)
+    payment.delete()
+    messages.success(request, f'Your {payment.amount} amount is deleted successfully!')
+    return redirect('payments')

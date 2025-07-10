@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group    
+from .models import Agent
 
 # Create your views here.
 
@@ -57,9 +58,44 @@ def add_user(request):
 
     return render(request, 'user/add_user.html')
 
-def add_agents(request):
-    return render(request, 'user/add_agents.html')
 
 def logout(request):
     auth_logout(request)
     return redirect('login')
+
+def agents(request):
+    agents = Agent.objects.all()
+    context = {
+        'agents':agents
+    }
+    return render(request, 'user/agents.html', context)
+
+def add_agents(request):
+    if request.method == 'POST':
+        commission_agent = request.POST.get('agent')
+        commission_rate = request.POST.get('commission_rate')
+        agent = Agent(commission_agent=commission_agent, commission_rate=commission_rate)
+        agent.save()
+        messages.success(request, f"{commission_agent} is added successfully!")
+        return redirect('agents')
+
+    return render(request, 'user/add_agents.html')
+
+def edit_agent(request, id):
+    agent = Agent.objects.get(id=id)
+    if request.method == 'POST':
+        commission_agent = request.POST.get('agent')
+        commission_rate = request.POST.get('commission_rate')
+
+        agent.commission_agent = commission_agent
+        agent.commission_rate = commission_rate
+        agent.save()
+        messages.success(request, f"{commission_agent} is updated successfully!")
+        return redirect('agents')
+    return render(request, 'user/edit_agent.html', {'agent':agent})
+
+def delete_agent(request, id):
+    agent = Agent.objects.get(id=id)
+    agent.delete()
+    messages.success(request, 'Agent deleted successfully!')
+    return redirect('agents')
