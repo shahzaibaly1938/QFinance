@@ -1,8 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db.models import Sum
 from .models import Customer
+from sales.models import Ticketsale
+from payments.models import Payment
 
 # Create your views here.
+
+def customers(request):
+    customers = Customer.objects.all()
+    context = {
+        'customers':customers,
+    }
+    return render(request, 'customers/customers.html', context)
 
 def add_customers(request):
     if request.method == 'POST':
@@ -19,3 +29,40 @@ def add_customers(request):
         messages.success(request, "Customer created successfully!")
         return redirect('add_customers')
     return render(request, 'customers/add_customers.html')
+
+def customer_detail(request, id):
+    customer = Customer.objects.get(id=id)
+    tickets = Ticketsale.objects.filter(customer=customer)
+    payments = Payment.objects.filter(customer=customer)
+    total_payments = payments.aggregate(total=Sum('amount'))['total'] or 0
+    context = {
+        'customer':customer,
+        'tickets':tickets,
+        'payments':payments,
+        'total_payments':total_payments,
+    }
+    return render(request, 'customers/customer_detail.html', context)
+
+
+def edit_customer(request, id):
+    customer = Customer.objects.get(id=id)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+
+        customer.name = name
+        customer.email =email
+        customer.phone = phone
+        customer.address = address
+        customer.save()
+
+        messages.success(request, f'{customer.name} is updated successfully')
+        return redirect('customers')
+    return render(request, 'customers/edit_customer.html', {'customer':customer})
+
+def delete_customer(request, id):
+    customer = Customer.objects.get(id=id)
+    customer.delete()
+    return redirect('customers')

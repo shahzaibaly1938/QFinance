@@ -7,4 +7,5 @@ urlpatterns = [
         path('unpaid-tickets/', views.unpaid_tickets, name='unpaid_tickets'),
         path('add-payment/<int:id>/', views.add_payment, name='add_payment'),
         path('edit-payment/<int:id>/', views.edit_payment, name='edit_payment'),
+        path('delete-payment/<int:id>/', views.delete_payment, name='delete_payment'),
 ]

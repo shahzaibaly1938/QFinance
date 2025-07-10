@@ -138,14 +138,51 @@ def edit_ticket(request, id):
     return render(request, 'sales/edit_ticket.html', context)
 
 
+
+# Airlines Views :
+
+def airlines(request):
+    airlines = Airline.objects.all()
+    context = {
+        'airlines':airlines,
+    }
+    return render(request, 'sales/airlines.html', context)
+
+
 def add_airline(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         airline = Airline(name=name)
         airline.save()
         messages.success(request, 'Airline added successfully!')
-        return redirect('add_airline')
+        return redirect('airlines')
     return render(request, 'sales/add_airlines.html')
+
+
+def edit_airline(request, id):
+    airline = Airline.objects.get(id=id)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        airline.name = name
+        airline.save()
+        messages.success(request, f'{airline.name} is updated successfully!')
+        return redirect('airlines')
+    return render(request, 'sales/edit_airline.html', {'airline':airline})
+
+def delete_airline(request, id):
+    airline = Airline.objects.get(id=id)
+    if request.method == "POST":
+        airline.delete()
+    return redirect('airlines')
+
+# Destinations Views :
+
+def destinations(request):
+    destinations = Destination.objects.all()
+    context = {
+        'destinations':destinations,
+    }
+    return render(request, 'sales/destinations.html', context)
 
 def add_destination(request):
     if request.method == 'POST':
@@ -153,5 +190,21 @@ def add_destination(request):
         destination = Destination(name=name)
         destination.save()
         messages.success(request, 'Destination added successfully!')
-        return redirect('add_destination')
+        return redirect('destinations')
     return render(request, 'sales/add_destinations.html')
+
+def edit_destination(request, id):
+    destination = Destination.objects.get(id=id)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        destination.name = name
+        destination.save()
+        messages.success(request, f'{destination.name} is updated successfully!')
+        return redirect('destinations')
+    return render(request, 'sales/edit_destination.html', {'destination':destination})
+
+def delete_destination(request, id):
+    destination = Destination.objects.get(id=id)
+    if request.method == "POST":
+        destination.delete()
+    return redirect('destinations')

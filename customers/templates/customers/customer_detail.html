@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Details | Q Finance{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Customer Details</h1>
+  <div class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h2 class="text-lg font-semibold text-[var(--primary-dark)] mb-2">Customer Info</h2>
+        <table class="w-full text-left mb-4">
+          <tbody>
+            <tr>
+              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Name:</th>
+              <td class="py-2">{{ customer.name }}</td>
+            </tr>
+            <tr>
+              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Email:</th>
+              <td class="py-2">{{ customer.email }}</td>
+            </tr>
+            <tr>
+              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Phone:</th>
+              <td class="py-2">{{ customer.phone }}</td>
+            </tr>
+            <tr>
+              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Address:</th>
+              <td class="py-2">{{ customer.address }}</td>
+            </tr>
+            <!-- Add more fields if needed -->
+          </tbody>
+        </table>
+        <div class="flex gap-2 mt-2">
+            <a href="javascript:history.back()" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition">Back</a>
+          <a href="{% url 'edit_customer' customer.id %}" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Edit</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-[var(--primary-dark)] mb-2">Summary</h2>
+        <ul class="mb-4 text-[var(--primary-dark)]">
+          <li>Total Tickets: <span class="font-bold">{{ tickets|length }}</span></li>
+          <li>Total Payments: <span class="font-bold">PKR {{ total_payments }}</span></li>
+          <li>Unpaid Tickets: <span class="font-bold">{{ unpaid_tickets|length }}</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tickets Section -->
+  <div class="bg-white rounded-xl shadow px-6 py-6 mb-8">
+    <h2 class="text-xl font-semibold text-[var(--primary-dark)] mb-4">Tickets</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-[var(--secondary)]">
+        <thead class="bg-[var(--primary)]">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">PNR</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Agent</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Amount</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Flight Date</th>
+            <th class="px-4 py-3 text-center text-xs font-semibold text-[var(--primary-dark)] uppercase">Status</th>
+            <th class="px-4 py-3 text-center text-xs font-semibold text-[var(--primary-dark)] uppercase">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[var(--secondary)]">
+          {% for ticket in tickets %}
+          <tr class="hover:bg-[var(--secondary)] transition" onclick="window.location='{% url 'ticket_detail' ticket.id %}'">
+            <td class="px-4 py-2">{{ ticket.pnr }}</td>
+            <td class="px-4 py-2">{{ ticket.agent.commission_agent }}</td>
+            <td class="px-4 py-2">PKR {{ ticket.amount }}</td>
+            <td class="px-4 py-2">{{ ticket.flight_date|date:"Y-m-d" }}</td>
+            <td class="px-4 py-2 text-center">
+              {% if ticket.paid == "paid" %}
+                <span class="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-semibold">Paid</span>
+              {% else %}
+                <span class="px-2 py-1 rounded bg-red-100 text-red-700 text-xs font-semibold">Unpaid</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-2 text-center">
+              <a href="{% url 'ticket_detail' ticket.id %}" class="text-[var(--primary-dark)] hover:underline font-semibold">View</a>
+              {% if ticket.paid != "paid" %}
+              <a href="{% url 'add_payment' ticket.id %}" class="ml-2 text-green-600 hover:underline font-semibold">Pay</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-4 py-6 text-center text-[var(--primary-dark)]">No tickets found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Payments Section -->
+  <div class="bg-white rounded-xl shadow px-6 py-6 mb-8">
+    <h2 class="text-xl font-semibold text-[var(--primary-dark)] mb-4">Payments</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-[var(--secondary)]">
+        <thead class="bg-[var(--primary)]">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Amount</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Method</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Date</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Notes</th>
+            <th class="px-4 py-3 text-center text-xs font-semibold text-[var(--primary-dark)] uppercase">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[var(--secondary)]">
+          {% for payment in payments %}
+          <tr class="hover:bg-[var(--secondary)] transition" onclick="window.location='{% url 'payment_detail' payment.id %}'">
+            <td class="px-4 py-2">PKR {{ payment.amount }}</td>
+            <td class="px-4 py-2">{{ payment.method|title }}</td>
+            <td class="px-4 py-2">{{ payment.date|date:"Y-m-d" }}</td>
+            <td class="px-4 py-2">{{ payment.notes }}</td>
+            <td class="px-4 py-2 text-center">
+              <a href="{% url 'payment_detail' payment.id %}" class="text-[var(--primary-dark)] hover:underline font-semibold">View</a>
+              <a href="{% url 'edit_payment' payment.id %}" class="ml-2 text-blue-600 hover:underline font-semibold">Edit</a>
+              <a href="{% url 'delete_payment' payment.id %}" class="ml-2 text-red-600 hover:underline font-semibold">Delete</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-4 py-6 text-center text-[var(--primary-dark)]">No payments found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

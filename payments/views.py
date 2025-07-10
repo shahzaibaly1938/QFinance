@@ -57,3 +57,7 @@ def edit_payment(request, id):
         'customers':customers,
     }
     return render(request,'payments/edit_payment.html', context)
+
+
+def delete_payment(request, id):
+    pass
