@@ -16,9 +16,9 @@ class Destination(models.Model):
         return self.name
 
 class Ticketsale(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer')
     pnr = models.CharField(max_length=100)
-    airline = models.ForeignKey(Airline ,on_delete=models.CASCADE)
+    airline = models.ForeignKey(Airline ,on_delete=models.CASCADE, related_name='airline')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     commission = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     reserve_date = models.DateField()

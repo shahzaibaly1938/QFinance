@@ -58,7 +58,7 @@ def add_ticket(request):
             notes=notes,
         )
         ticket.save()
-        return redirect('ticket_sale')
+        return redirect('payment_process', ticket.id)
         
 
     customers = Customer.objects.all()
@@ -74,6 +74,9 @@ def add_ticket(request):
     }
     return render(request, 'sales/add_ticket.html', context)
 
+def payment_process(request, id):
+    ticket = Ticketsale.objects.get(id=id)
+    return render(request, 'sales/payment_step.html', {'ticket':ticket})
 
 def ticket_detail(request, id):
     ticket = Ticketsale.objects.get(id=id)

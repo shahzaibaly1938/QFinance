@@ -53,10 +53,11 @@ def dashboard(request):
     total_commission = sales.aggregate(total=Sum('commission'))['total'] or 0
     total_profit = total_commission - total_expense
     recover_payment = total_sales_amount - total_payment_amount
+    amount_received = total_sales_amount - recover_payment
 
     # Calculate total commission of unpaid tickets
     unpaid_commission = sales.filter(paid='unpaid').aggregate(total=Sum('commission'))['total'] or 0
-    # Total amount in account is total profit minus unpaid commissions
+    # Total amount in account is total profit minus unpaid  
     in_account = total_profit - unpaid_commission
 
     # Add this to your dashboard view
@@ -87,6 +88,7 @@ def dashboard(request):
         'recover_payment':recover_payment,
         'total_commission':total_commission,
         'total_profit':total_profit,
+        'amount_received':amount_received,
         'in_account':in_account,
         'months': months,
         'sales': sales,

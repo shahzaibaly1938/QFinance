@@ -81,7 +81,7 @@
   </div>
   <div class="flex gap-2">
     <a href="{% url 'edit_ticket' ticket.id %}" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Edit</a>
-    <a href="{% url 'ticket_sale' %}" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition">Back to Tickets</a>
+    <a href="javascript:history.back()" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition">Back</a>
   </div>
 </div>
 {% endblock %}

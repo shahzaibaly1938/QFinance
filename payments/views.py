@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Payment
 from customers.models import Customer
+from sales.models import Ticketsale
+from django.contrib import messages
 from django.core.paginator import Paginator
 
 # Create your views here.
@@ -24,8 +26,30 @@ def payment_detail(request, id):
     }
     return render(request, 'payments/payment_detail.html', context)
 
-def add_payment(request):
-    return render(request, 'payments/add_payments.html')
+def add_payment(request, id):
+    ticket = Ticketsale.objects.get(id=id)
+    customer = ticket.customer
+    if request.method == 'POST':
+        payment_method = request.POST.get('method')
+        date = request.POST.get('date')
+        notes = request.POST.get('notes')
+        payment = Payment(customer=customer, amount=ticket.amount, method=payment_method, date=date, notes=notes)
+        payment.save()
+        ticket.paid = 'paid'
+        ticket.save()
+        messages.success(request, f"Amount: {ticket.amount} paid by {customer.name} successfully!")
+        return redirect('unpaid_tickets')
+    return render(request, 'payments/add_payments.html', {'ticket': ticket, 'customer': customer})
+
+def unpaid_tickets(request):
+    customer = Customer.objects.all()
+    tickets_unpaid = Ticketsale.objects.filter(paid='unpaid')
+
+    context = {
+        'customers':customer,
+        'unpaid_tickets':tickets_unpaid,
+    }
+    return render(request, 'payments/unpaid_tickets.html', context)
 
 def edit_payment(request, id):
     customers = Customer.objects.all()
