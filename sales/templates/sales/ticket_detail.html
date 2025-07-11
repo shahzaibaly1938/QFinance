@@ -22,7 +22,7 @@
         </tr>
         <tr>
           <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Agent:</th>
-          <td class="py-2">{{ ticket.agent.user.username }}</td>
+          <td class="py-2">{{ ticket.agent.commission_agent }}</td>
         </tr>
         <tr>
           <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Airline:</th>
@@ -72,7 +72,6 @@
       <h2 class="text-lg font-semibold text-[var(--primary-dark)] mb-2">Related Details</h2>
       <ul class="list-disc pl-6 text-[var(--primary-dark)]">
         <li>Customer Contact: {{ ticket.customer.phone|default:"N/A" }}</li>
-        <li>Agent Email: {{ ticket.agent.user.email|default:"N/A" }}</li>
         <li>Airline: {{ ticket.airline.name }}</li>
         <li>Destination : From - {{ ticket.flight_from.name }} | To - {{ ticket.flight_to.name }}</li>
         <!-- Add more related info as needed -->

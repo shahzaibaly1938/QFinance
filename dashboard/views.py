@@ -24,6 +24,7 @@ def dashboard(request):
 
     sales = Ticketsale.objects.all()
     payment = Payment.objects.all()
+    monthly_expense = Expense.objects.all()
 
     if agent_id:
         sales = sales.filter(agent_id=agent_id)
@@ -35,22 +36,26 @@ def dashboard(request):
     if start_date and end_date: 
         sales = sales.filter(reserve_date__range=[start_date, end_date])
         payment = payment.filter(date__range=[start_date, end_date])
+        monthly_expense = monthly_expense.filter(date__range=[start_date, end_date])
 
     else:
         sales = sales.filter(reserve_date__year=current_year, reserve_date__month = current_month)
         payment = payment.filter(date__year=current_year, date__month = current_month)
+        monthly_expense = Expense.objects.filter(date__year=current_year, date__month=current_month)
 
     total_sales_amount = sales.aggregate(total=Sum('amount'))['total'] or 0
     total_payment_amount = payment.aggregate(total=Sum('amount'))['total'] or 0
     total_tickets = sales.count()
 
-    monthly_expense = Expense.objects.filter(date__year=current_year, date__month=current_month)
+    
 
     total_expense = monthly_expense.aggregate(total=Sum('amount'))['total'] or 0
   
-    # agent = Agent.objects.get(user=request.user)
-    # commission_rate = agent.commission_rate
     total_commission = sales.aggregate(total=Sum('commission'))['total'] or 0
+
+    # ticket = Ticketsale.objects.all()
+    # ticket_commission = ticket.aggregate(total=Sum('commission'))['total'] or 0
+
     total_profit = total_commission - total_expense
     recover_payment = total_sales_amount - total_payment_amount
     amount_received = total_sales_amount - recover_payment
@@ -80,7 +85,7 @@ def dashboard(request):
 
 
     context = {
-        # 'agents': Agent.objects.all(),
+        'agents': Agent.objects.all(),
         'customers': Customer.objects.all(),
         'total_sales':total_sales_amount,
         'total_tickets':total_tickets,

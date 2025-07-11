@@ -27,7 +27,7 @@ def add_customers(request):
             address=address,
         )
         messages.success(request, "Customer created successfully!")
-        return redirect('add_customers')
+        return redirect('customers')
     return render(request, 'customers/add_customers.html')
 
 def customer_detail(request, id):

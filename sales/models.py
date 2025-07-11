@@ -21,6 +21,7 @@ class Ticketsale(models.Model):
     airline = models.ForeignKey(Airline ,on_delete=models.CASCADE, related_name='airline')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     commission = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    agent = models.ForeignKey(Agent, on_delete=models.PROTECT, null=True, blank=True)
     reserve_date = models.DateField()
     flight_date = models.DateField()
     flight_from = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='flight_from', default='')
