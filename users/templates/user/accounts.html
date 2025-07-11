@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | Q Finance{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-8 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">My Profile</h1>
+  <div class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 mb-8">
+    <div class="flex flex-col md:flex-row gap-6 items-center">
+      <div class="flex-1">
+        <table class="w-full text-left mb-4">
+          <tbody>
+            <tr>
+              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Username:</th>
+              <td class="py-2">{{ user.username }}</td>
+            </tr>
+            <tr>
+              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Email:</th>
+              <td class="py-2">{{ user.email }}</td>
+            </tr>
+           
+            <tr>
+              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Joined:</th>
+              <td class="py-2">{{ user.date_joined|date:"Y-m-d" }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="flex gap-2 mt-2">
+          <a href="/admin/" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Custom Admin</a>
+          <a href="{% url 'add_user' %}" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition">Add User</a>
+          <a href="{% url 'logout' %}" class="px-4 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

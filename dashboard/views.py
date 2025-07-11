@@ -11,7 +11,7 @@ from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-@login_required
+
 def dashboard(request):
     current_month = now().month
     current_year = now().year

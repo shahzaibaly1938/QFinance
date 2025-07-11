@@ -14,4 +14,5 @@ urlpatterns = [
     path('add-agents/', views.add_agents, name='add_agents'),
     path('edit_agent/<int:id>/', views.edit_agent, name='edit_agent'),
     path('delete_agent/<int:id>/', views.delete_agent, name='delete_agent'),
+    path('account/', views.accounts, name='account'),
 ]
