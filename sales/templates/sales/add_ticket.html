@@ -142,22 +142,5 @@
         </div>
     </form>
 </div>
-<!-- Make select searchable using Choices.js -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const customerSelect = document.getElementById('customerSelect');
-    if (customerSelect) {
-        new Choices(customerSelect, {
-            searchEnabled: true,
-            itemSelectText: '',
-            shouldSort: false,
-            placeholder: true,
-            searchPlaceholderValue: 'Search customer...',
-            
-        });
-    }
-});
-</script>
+
 {% endblock %}

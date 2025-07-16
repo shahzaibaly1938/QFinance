@@ -1,20 +1,98 @@
-<h2>Customer Ledger: {{ customer.name }}</h2>
+{% extends "base.html" %}
 
-<h3>Tickets</h3>
-<ul>
-  {% for ticket in tickets %}
-    <li>{{ ticket.pnr }} - Rs.{{ ticket.amount }}</li>
-  {% endfor %}
-</ul>
+{% block title %}Customer Ledger | Q Finance{% endblock %}
 
-<h3>Payments</h3>
-<ul>
-  {% for payment in payments %}
-    <li>{{ payment.date }} - Rs.{{ payment.amount }}</li>
-  {% endfor %}
-</ul>
+{% block content %}
+<div class="max-w-4xl mx-auto py-8 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Customer Ledger: {{ customer.name }}</h1>
 
-<h4>Total Paid: Rs.{{ total_paid }}</h4>
-<h4>Total Due: Rs.{{ total_due }}</h4>
+  <!-- Filters -->
+  <form method="get" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-4 mb-8 flex flex-wrap gap-4 items-end justify-center">
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">From</label>
+      <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+    </div>
+    <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">To</label>
+      <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+    </div>
+    <button type="submit" class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
+    <a href="{% url 'customer_ledger' customer.id %}" class="h-10 px-6 py-2 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] font-semibold shadow transition">Clear Filter</a>
+  </form>
 
-<a href="{% url 'generate_invoice' customer.id %}" target="_blank">Generate Invoice (PDF)</a>
+  <!-- Ledger Summary -->
+  <div class="bg-white rounded-xl shadow px-6 py-6 mb-8">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+      <div>
+        <h2 class="text-lg font-semibold text-[var(--primary-dark)] mb-2">Summary</h2>
+        <ul class="text-[var(--primary-dark)]">
+          <li>Total Paid: <span class="font-bold">PKR {{ total_paid }}</span></li>
+          <li>Total Due: <span class="font-bold">PKR {{ total_due }}</span></li>
+        </ul>
+      </div>
+      <div>
+        <a href="{% url 'generate_invoice' customer.id %}?start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" target="_blank"
+           class="px-5 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
+          Generate Invoice (PDF)
+        </a>
+      </div>
+    </div>
+
+    <!-- Tickets Table -->
+    <h3 class="text-lg font-semibold text-[var(--primary-dark)] mb-2">Tickets</h3>
+    <div class="overflow-x-auto mb-6">
+      <table class="min-w-full divide-y divide-[var(--secondary)]">
+        <thead class="bg-[var(--primary)]">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">PNR</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Amount</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Date</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[var(--secondary)]">
+          {% for ticket in tickets %}
+          <tr>
+            <td class="px-4 py-2">{{ ticket.pnr }}</td>
+            <td class="px-4 py-2">PKR {{ ticket.amount }}</td>
+            <td class="px-4 py-2">{{ ticket.reserve_date|date:"Y-m-d" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="px-4 py-6 text-center text-[var(--primary-dark)]">No tickets found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Payments Table -->
+    <h3 class="text-lg font-semibold text-[var(--primary-dark)] mb-2">Payments</h3>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-[var(--secondary)]">
+        <thead class="bg-[var(--primary)]">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Date</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Amount</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Method</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Notes</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[var(--secondary)]">
+          {% for payment in payments %}
+          <tr>
+            <td class="px-4 py-2">{{ payment.date|date:"Y-m-d" }}</td>
+            <td class="px-4 py-2">PKR {{ payment.amount }}</td>
+            <td class="px-4 py-2">{{ payment.method|title }}</td>
+            <td class="px-4 py-2">{{ payment.notes }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="px-4 py-6 text-center text-[var(--primary-dark)]">No payments found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

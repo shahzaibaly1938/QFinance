@@ -11,6 +11,26 @@ def expenses_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # Filtering logic
+    cat_id = request.GET.get('category')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    filters = {}
+    if cat_id:
+        filters['category'] = cat_id
+    if start_date:
+        filters['date__gte'] = start_date
+    if end_date:
+        filters['date__lte'] = end_date
+
+
+    if filters:
+        expense = Expense.objects.filter( **filters).order_by('-date')
+        paginator = Paginator(expense, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
     context = {
         'categories':expense_category,
         'expenses': page_obj,

@@ -6,21 +6,29 @@
 <div class="max-w-7xl mx-auto py-8 px-4 md:px-8">
   <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
     <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Payments</h1>
+    <div>
+     <a href="{% url 'unpaid_tickets' %}">
+      <button class="bg-[var(--primary)] text-[var(--primary-dark)] px-5 py-2 rounded-lg font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
+        + See Upaid Tickets
+      </button>
+    </a>
     <a href="{% url 'unpaid_tickets' %}">
       <button class="bg-[var(--primary-dark)] text-[var(--secondary)] px-5 py-2 rounded-lg font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">
         + Add Payment
       </button>
-    </a>
+    </a></div>
   </div>
 
   <!-- Filters (optional, remove if not needed) -->
   <form method="get" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-4 mb-8 flex flex-wrap gap-4 items-end justify-center">
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
-      <select name="customer" class="w-48 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-        <option value="">All Customers</option>
+     <select name="customer"
+        class="flex-1  px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"
+        id="customerSelect">
+        <option value="{{ request.GET.customer }}">Current Customer ID: {{ request.GET.customer }}</option>
         {% for customer in customers %}
-        <option value="{{ customer.id }}" {% if request.GET.customer == customer.id|stringformat:"s" %}selected{% endif %}>{{ customer.name }}</option>
+        <option value="{{ customer.id }}">{{ customer.name }}</option>
         {% endfor %}
       </select>
     </div>
@@ -33,6 +41,7 @@
       <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
     </div>
     <button type="submit" class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
+    <a href="{% url 'payments' %}" class="h-10 px-6 py-2 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] font-semibold shadow transition">Clear Filter</a>
   </form>
 
   <!-- Payments Table -->

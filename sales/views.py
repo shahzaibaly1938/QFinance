@@ -16,6 +16,34 @@ def ticket_sale(request):
     agents = Agent.objects.all()
     destinations = Destination.objects.all()
 
+    # Filtering logic
+    agent_id = request.GET.get('agent')
+    customer_id = request.GET.get('customer')
+    flight_from_id = request.GET.get('flight_from')
+    flight_to_id = request.GET.get('flight_to')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    filters = {}
+    if agent_id:
+        filters['agent_id'] = agent_id
+    if customer_id:
+        filters['customer_id'] = customer_id
+    if flight_from_id:
+        filters['flight_from_id'] = flight_from_id
+    if flight_to_id:
+        filters['flight_to_id'] = flight_to_id
+    if start_date:
+        filters['reserve_date__gte'] = start_date
+    if end_date:
+        filters['reserve_date__lte'] = end_date
+
+    if filters:
+        tickets = Ticketsale.objects.filter(**filters).order_by('-reserve_date')
+        paginator = Paginator(tickets, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
     context = {
         'tickets':page_obj,
         'customers':customers,
@@ -47,6 +75,7 @@ def add_ticket(request):
             customer=Customer.objects.get(id=customer),
             commission=amount_decimal * agent.commission_rate,
             pnr=pnr,
+            agent=agent,
             airline=Airline.objects.get(id=airline),
             amount=amount_decimal,
             reserve_date=reserve_date,
@@ -90,7 +119,6 @@ def delete_ticket(request, id):
 
 def edit_ticket(request, id):
     if request.method == 'POST':
-        customer = request.POST.get('customer')
         agent = request.POST.get('agent')
         pnr = request.POST.get('pnr')
         airline = request.POST.get('airline')
@@ -105,7 +133,6 @@ def edit_ticket(request, id):
 
         ticket = Ticketsale.objects.get(id=id)
     
-        ticket.customer=Customer.objects.get(id=customer)
         ticket.agent = Agent.objects.get(id=agent)
         ticket.pnr = pnr
         ticket.airline = Airline.objects.get(id=airline)
@@ -129,7 +156,7 @@ def edit_ticket(request, id):
     airlines = Airline.objects.all()
 
     context = {
-        'customers':customers,
+        'customer':ticket.customer,
         'agents':agents,
         'destinations':destinations,
         'airlines':airlines,

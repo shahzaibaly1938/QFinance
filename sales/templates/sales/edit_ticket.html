@@ -12,13 +12,8 @@
       <div>
         <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
         <div class="flex gap-2">
-          <select name="customer" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-            <option value="">Select Customer</option>
-            {% for customer in customers %}
-              <option value="{{ customer.id }}" {% if ticket.customer.id == customer.id %}selected{% endif %}>{{ customer.name }}</option>
-            {% endfor %}
-          </select>
-          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+          <input name="customer" value="{{ customer.name }}" readonly required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
+         
         </div>
       </div>
       <!-- Agent -->
@@ -31,7 +26,7 @@
               <option value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}selected{% endif %}>{{ agent.commission_agent }}</option>
             {% endfor %}
           </select>
-          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+          <button type="button" onclick="window.open('{% url 'add_agents' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
         </div>
       </div>
       <!-- PNR -->
@@ -49,7 +44,7 @@
               <option value="{{ airline.id }}" {% if ticket.airline.id == airline.id %}selected{% endif %}>{{ airline.name }}</option>
             {% endfor %}
           </select>
-          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+          <button type="button" onclick="window.open('{% url 'add_airline' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
         </div>
       </div>
       <!-- Amount -->
@@ -77,7 +72,7 @@
               <option value="{{ dest.id }}" {% if ticket.flight_from.id == dest.id %}selected{% endif %}>{{ dest.name }}</option>
             {% endfor %}
           </select>
-          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+          <button type="button" onclick="window.open('{% url 'add_destination' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
         </div>
       </div>
       <!-- Flight To -->
@@ -90,7 +85,7 @@
               <option value="{{ dest.id }}" {% if ticket.flight_to.id == dest.id %}selected{% endif %}>{{ dest.name }}</option>
             {% endfor %}
           </select>
-          <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var,--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+          <button type="button" onclick="window.open('{% url 'add_destination' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
         </div>
       </div>
       <!-- Reference -->
@@ -101,13 +96,15 @@
       <!-- Paid -->
       <div>
         <label class="block text-[var(--primary-dark)] font-medium mb-1">Payment Status</label>
-        <select name="payment" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-          <option value="paid" {% if ticket.paid == 'paid' %}selected{% endif %}>Paid</option>
-          <option value="unpaid" {% if ticket.paid == 'unpaid' %}selected{% endif %}>Unpaid</option>
-        </select>
+        {% if ticket.paid == 'paid' %}
+        <input type="text" name="payment" value="{{ ticket.paid }}" readonly class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+        {% endif %}
+        {% if ticket.paid == 'unpaid' %}
+        <input type="text" name="payment" value="{{ ticket.paid }}" readonly class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+        {% endif %}
       </div>
       <div>
-                <button type="button" onclick="window.open('{% url 'add_ticket' %}', '_blank', 'width=500,height=600')"
+                <button type="button" onclick="window.open('{% url 'add_payment' ticket.id %}', '_blank', 'width=500,height=600')"
                     class="px-3 py-2 mt-7 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+
                     Add payment</button>
             </div>

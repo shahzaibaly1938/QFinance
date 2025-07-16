@@ -16,9 +16,15 @@
   <!-- Filters -->
   <form method="get" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-4 mb-8 flex flex-wrap gap-4 items-end justify-center">
     <div>
-      <label class="block text-[var(--primary-dark)] font-medium mb-1">Name</label>
-      <input type="text" name="name" value="{{ request.GET.name }}" placeholder="Search by name"
-        class="w-48 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
+      <select name="customer" 
+        class="flex-1  px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"
+        id="customerSelect">    
+        <option value="{{ request.GET.customer }}">Current Customer ID: {{ request.GET.customer }}</option>
+        {% for customer in s_customers %}
+        <option value="{{ customer.id }}">{{ customer.name }}</option>
+        {% endfor %}
+      </select>
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Email</label>
@@ -31,6 +37,7 @@
         class="w-48 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
     </div>
     <button type="submit" class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
+    <a href="{% url 'customers' %}" class="h-10 px-6 py-2 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] font-semibold shadow transition">Clear Filter</a>
   </form>
 
   <!-- Customers Table -->

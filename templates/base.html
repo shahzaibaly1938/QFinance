@@ -41,12 +41,13 @@
             <a href="{% url 'customers' %}"
                 class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'customers' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Customers</a>
             <a href="{% url 'agents' %}"
-                class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'agents' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Commission Agent</a>
+                class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'agents' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Commission
+                Agent</a>
             <a href="{% url 'airlines' %}"
                 class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'airlines' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Airlines</a>
             <a href="{% url 'destinations' %}"
                 class="block py-2 px-4 rounded-lg text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition font-semibold {% if request.resolver_match.url_name == 'destinations' %}bg-[var(--secondary)] text-[var(--secondary-dark)]{% endif %}">Destinations</a>
-            
+
         </nav>
     </aside>
     <!-- Main Content Area -->
@@ -66,18 +67,19 @@
             </div>
             <div>
                 <a href="{% url 'account' %}">
-                <div
-                    class="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--secondary)] text-[var(--primary-dark)] font-bold text-lg">
-                    {% if user.is_authenticated %}
-                    {{ user.username|slice:":1"|upper }}
-                    {% else %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="#333446">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {% endif %}
-                </div></a>
+                    <div
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--secondary)] text-[var(--primary-dark)] font-bold text-lg">
+                        {% if user.is_authenticated %}
+                        {{ user.username|slice:":1"|upper }}
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="#333446">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {% endif %}
+                    </div>
+                </a>
             </div>
         </nav>
         <!-- Page Content -->
@@ -86,6 +88,8 @@
             {% endblock %}
         </main>
     </div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
         // Responsive sidebar toggle for mobile
         document.addEventListener('DOMContentLoaded', function () {
@@ -107,6 +111,26 @@
         function closeModal(id) {
             document.getElementById(`deleteModal-${id}`).classList.add('hidden');
         }
+
+
+
+        <!-- Make select searchable using Choices.js -->
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const customerSelect = document.getElementById('customerSelect');
+            if (customerSelect) {
+                new Choices(customerSelect, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    placeholder: true,
+                    searchPlaceholderValue: 'Search customer...',
+
+                });
+            }
+        });
+
 
 
     </script>

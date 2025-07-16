@@ -2,46 +2,216 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>Invoice - {{ customer.name }}</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+        body { font-family: Arial, sans-serif; background: #f8f9fa; color: #222; margin: 0; }
+        .invoice-box {
+            max-width: 800px;
+            margin: 24px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            padding: 24px 18px;
+        }
+        .company-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            gap: 8px;
+        }
+        .company-logo {
+            height: 48px;
+            max-width: 140px;
+            object-fit: contain;
+        }
+        .company-details {
+            text-align: right;
+            min-width: 180px;
+            font-size: 0.97rem;
+            line-height: 1.4;
+        }
+        .company-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1a237e;
+            margin-bottom: 2px;
+        }
+        .invoice-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 8px 0 8px 0;
+            color: #222;
+            text-align: center;
+        }
+        .info-table, .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 0 12px 0;
+        }
+        .info-table th, .info-table td {
+            border: none;
+            padding: 3px 4px;
+            font-size: 0.98rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .info-table th {
+            width: 110px;
+            color: #1a237e;
+            font-weight: 600;
+        }
+        .data-table th {
+            background: #e3e7f1;
+            color: #1a237e;
+            font-size: 0.98rem;
+            font-weight: bold;
+            border: 1px solid #bdbdbd;
+            padding: 6px;
+            text-align: center;
+        }
+        .data-table td {
+            border: 1px solid #bdbdbd;
+            padding: 6px;
+            font-size: 0.98rem;
+            text-align: center;
+        }
+        .totals {
+            margin-top: 12px;
+            text-align: right;
+        }
+        .totals h4 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            color: #1a237e;
+            font-weight: 600;
+        }
+        .footer {
+            margin-top: 18px;
+            font-size: 0.93rem;
+            color: #888;
+            text-align: center;
+        }
+        @media (max-width: 700px) {
+            .invoice-box {
+                padding: 8px 2vw;
+            }
+            .company-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            .company-details {
+                text-align: left;
+                min-width: 0;
+                font-size: 0.95rem;
+            }
+            .invoice-title {
+                font-size: 1.05rem;
+            }
+            .company-name {
+                font-size: 1.05rem;
+            }
+            .info-table th, .info-table td, .data-table th, .data-table td {
+                font-size: 0.95rem;
+                padding: 3px 2px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h2>Invoice - {{ customer.name }}</h2>
-    <p>Email: {{ customer.email }}</p>
-    <p>Phone: {{ customer.phone }}</p>
+    <div class="invoice-box">
+        <div class="company-header">
+            <div>
+                <img src="{{ company.logo_url|default:'/static/images/company-logo.png' }}" alt="Company Logo" class="company-logo">
+            </div>
+            <div class="company-details">
+                <div class="company-name">{{ company.name|default:"Q Travel & Finance" }}</div>
+                <div>{{ company.address|default:"123 Main Street, City, Country" }}</div>
+                <div>Email: {{ company.email|default:"info@qtravel.com" }}</div>
+                <div>Phone: {{ company.phone|default:"+92 300 0000000" }}</div>
+            </div>
+        </div>
 
-    <h4>Tickets</h4>
-    <table>
-        <tr>
-            <th>Ticket</th>
-            <th>Amount</th>
-        </tr>
-        {% for ticket in tickets %}
-        <tr>
-            <td>{{ ticket.pnr }}</td>
-            <td>Rs.{{ ticket.amount }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <div class="invoice-title">Invoice</div>
+        <table class="info-table">
+            <tr>
+                <th>Invoice Date:</th>
+                <td>{{ invoice_date|default:today|date:"Y-m-d" }}</td>
+                <th>Customer ID #:</th>
+                <td>{{ customer.id }}</td>
+            </tr>
+            <tr>
+                <th>Customer Name:</th>
+                <td>{{ customer.name }}</td>
+                <th>Customer Email:</th>
+                <td>{{ customer.email }}</td>
+            </tr>
+            <tr>
+                <th>Customer Phone:</th>
+                <td>{{ customer.phone }}</td>
+                <th>Period:</th>
+                <td>
+                    {% if start_date and end_date %}
+                        {{ start_date }} to {{ end_date }}
+                    {% else %}
+                        All Time
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
 
-    <h4>Payments</h4>
-    <table>
-        <tr>
-            <th>Date</th>
-            <th>Amount</th>
-        </tr>
-        {% for p in payments %}
-        <tr>
-            <td>{{ p.date }}</td>
-            <td>Rs.{{ p.amount }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <h4 style="margin-bottom:4px; text-align:center;">Tickets</h4>
+        <table class="data-table">
+            <tr>
+                <th>#</th>
+                <th>Ticket (PNR)</th>
+                <th>Reserve Date</th>
+                <th>Flight Date</th>
+                <th>Amount</th>
+            </tr>
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ ticket.pnr }}</td>
+                <td>{{ ticket.reserve_date|date:"Y-m-d" }}</td>
+                <td>{{ ticket.flight_date|date:"Y-m-d" }}</td>
+                <td>Rs.{{ ticket.amount }}</td>
+            </tr>
+            {% endfor %}
+        </table>
 
-    <h4>Total Paid: Rs.{{ total_paid }}</h4>
-    <h4>Total Due: Rs.{{ total_due }}</h4>
+        <h4 style="margin-bottom:4px; text-align:center;">Payments</h4>
+        <table class="data-table">
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Notes</th>
+            </tr>
+            {% for p in payments %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ p.date|date:"Y-m-d" }}</td>
+                <td>Rs.{{ p.amount }}</td>
+                <td>{{ p.method|title }}</td>
+                <td>{{ p.notes }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="totals">
+            <h4>Total Paid: <span style="color: #388e3c;">Rs.{{ total_paid }}</span></h4>
+            <h4>Total Due: <span style="color: #d32f2f;">Rs.{{ total_due }}</span></h4>
+        </div>
+
+        <div class="footer">
+            Thank you for your business.<br>
+            This is a system generated invoice and does not require signature.
+        </div>
+    </div>
 </body>
 </html>

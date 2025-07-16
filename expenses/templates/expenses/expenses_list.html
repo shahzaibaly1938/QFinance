@@ -24,7 +24,7 @@
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Category:</label>
       <select name="category" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-        <option value="">All</option>
+        <option value="{{ request.GET.cat }}">Current Category ID: {{ request.GET.cat }}</option>
         {% for cat in categories %}
           <option value="{{ cat.id }}">{{ cat.name }}</option>
         {% endfor %}
@@ -32,13 +32,14 @@
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">From:</label>
-      <input type="date" name="start_date" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"/>
+      <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"/>
     </div>
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">To:</label>
-      <input type="date" name="end_date" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"/>
+      <input type="date" name="end_date" value="{{ request.GET.end_date}}" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"/>
     </div>
     <button type="submit" class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
+    <a href="{% url 'expenses_list' %}" class="h-10 px-6 py-2 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] font-semibold shadow transition">Clear Filter</a>
   </form>
 
   <!-- Expenses Table -->

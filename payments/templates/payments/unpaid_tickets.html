@@ -11,19 +11,20 @@
         class="bg-[var(--secondary)] rounded-xl shadow px-6 py-4 mb-8 flex flex-wrap gap-4 items-end justify-center">
         <div>
             <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
-            <select name="customer"
-                class="w-48 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-                <option value="">All Customers</option>
-                {% for customer in customers %}
-                <option value="{{ customer.id }}" >{{ customer.name }}</option>
-                {% endfor %}
-            </select>
+          <select name="customer"
+        class="flex-1  px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"
+        id="customerSelect">
+        <option value="{{ request.GET.customer }}">Current Customer ID: {{ request.GET.customer }}</option>
+        {% for customer in customers %}
+        <option value="{{ customer.id }}">{{ customer.name }}</option>
+        {% endfor %}
+      </select>
         </div>
         <div>
             <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent</label>
             <select name="agent"
                 class="w-48 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-                <option value="">All Agents</option>
+                <option value="{{ request.GET.agent }}">Current Agent ID: {{ request.GET.agent }}</option>
                 {% for agent in agents %}
                 <option value="{{ agent.id }}" >
                     {{ agent.commission_agent }}</option>
@@ -42,7 +43,8 @@
         </div>
         <button type="submit"
             class="h-10 px-6 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] font-semibold shadow transition">Filter</button>
-    </form>
+        <a href="{% url 'unpaid_tickets' %}" class="h-10 px-6 py-2 rounded-lg text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] font-semibold shadow transition">Clear Filter</a>
+        </form>
 
     <!-- Unpaid Tickets Table -->
     <div class="overflow-x-auto bg-white rounded-xl shadow">

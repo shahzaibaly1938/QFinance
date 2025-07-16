@@ -4,13 +4,41 @@ from django.db.models import Sum
 from .models import Customer
 from sales.models import Ticketsale
 from payments.models import Payment
+from django.core.paginator import Paginator
 
 # Create your views here.
 
 def customers(request):
     customers = Customer.objects.all()
+    s_customers = Customer.objects.all()
+
+    paginator = Paginator(customers, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+     # Filtering logic
+    customer_id = request.GET.get('customer')
+    email = request.GET.get('email')
+    phone = request.GET.get('phone')
+
+    filters = {}
+    if customer_id:
+        filters['id'] = customer_id
+    if email:
+        filters['email'] = email
+    if phone:
+        filters['phone'] = phone
+
+
+    if filters:
+        customers = Customer.objects.filter( **filters).order_by('-created_at')
+        paginator = Paginator(customers, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
     context = {
-        'customers':customers,
+        'customers':page_obj,
+        's_customers':s_customers,
     }
     return render(request, 'customers/customers.html', context)
 
