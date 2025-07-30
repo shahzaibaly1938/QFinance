@@ -44,7 +44,8 @@ def dashboard(request):
     total_sales_amount = sales.aggregate(total=Sum('amount'))['total'] or 0
     
     _payment_ids = Payment.objects.filter(ticket_id__in=sales.values_list('id', flat=True))
-    print(_payment_ids)
+    
+
     
     total_payment_amount = _payment_ids.aggregate(total=Sum('amount'))['total'] or 0
     total_tickets = sales.count()
@@ -53,6 +54,8 @@ def dashboard(request):
     total_expense = monthly_expense.aggregate(total=Sum('amount'))['total'] or 0
 
     if customer_id:
+        total_expense = 0
+    if agent_id:
         total_expense = 0
   
     total_commission = sales.aggregate(total=Sum('commission'))['total'] or 0

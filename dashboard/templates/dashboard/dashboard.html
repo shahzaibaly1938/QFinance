@@ -64,7 +64,7 @@
     <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent:</label>
       <select name="agent" class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-        <option value="">All</option>
+        <option value="{{ request.GET.agent }}">Agent ID: {{ request.GET.agent }}</option>
         {% for agent in agents %}
           <option value="{{ agent.id }}">{{ agent.commission_agent }}</option>
         {% endfor %}
@@ -75,7 +75,7 @@
       <select name="customer" 
         class="flex-1  px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"
         id="customerSelect">
-        <option value="">Select Customer</option>
+        <option value="{{ request.GET.customer }}">Customer ID: {{ request.GET.customer }}</option>
         {% for customer in customers %}
         <option value="{{ customer.id }}">{{ customer.name }}</option>
         {% endfor %}

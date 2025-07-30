@@ -9,6 +9,9 @@ from django.core.paginator import Paginator
 from django.template.loader import get_template
 import openpyxl
 from datetime import date
+import csv
+from django.utils.encoding import smart_str
+
 # Create your views here.
 
 def reports(request):
@@ -136,28 +139,60 @@ def generate_invoice(request, customer_id):
     return response
 
 
+
+
 def export_ticket_sales(request):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Ticket Sales"
+    # Get filters from request
+    customer_id = request.GET.get('customer')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
 
-    #add headers
-    header = ['Date', 'Agent', 'Customer', 'Price', 'Status']
-    ws.append(header)
+    filters = {}
+    if customer_id:
+        filters['customer_id'] = customer_id
+    if start_date:
+        filters['reserve_date__gte'] = start_date
+    if end_date:
+        filters['reserve_date__lte'] = end_date
 
-    #add data
-    sales = Ticketsale.objects.select_related('agent', 'customer').all()
-    for sale in sales:
-        ws.append([
-            sale.reserve_date.strftime('%Y-%m-%d'),
-            sale.agent.user.username,
-            sale.customer.name,
-            float(sale.amount),
-            'Paid' if sale.paid else 'Due',
+    tickets = Ticketsale.objects.select_related('customer').filter(**filters)
+
+    # Create CSV response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=tickets.csv'
+
+    writer = csv.writer(response)
+    # Write header
+    writer.writerow([
+        smart_str('id'),
+        smart_str('Ticket PNR'),
+        smart_str('Customer'),
+        smart_str('Reserved Date'),
+        smart_str('Flight Date'),
+        smart_str('Price'),
+        smart_str('Payment Status'),
+        smart_str('Flight from'),
+        smart_str('Flight to'),
+        smart_str('Airline'),
+        smart_str('Commission'),
+        smart_str('Contact'),
+    ])
+
+    # Write data rows
+    for ticket in tickets:
+        writer.writerow([
+            smart_str(ticket.id),
+            smart_str(ticket.pnr),
+            smart_str(ticket.customer.name),
+            smart_str(str(ticket.reserve_date)),
+            smart_str(str(ticket.flight_date)),
+            smart_str(float(ticket.amount)),
+            smart_str('Paid' if ticket.paid else 'Due'),           
+            smart_str(ticket.flight_from),
+            smart_str(ticket.flight_to),
+            smart_str(ticket.airline.name if ticket.airline else 'N/A'),
+            smart_str(float(ticket.commission)),
+            smart_str(ticket.customer.phone if ticket.customer else 'N/A'),
         ])
 
-    #Create Response
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=ticket_sales.xlsx'
-    wb.save(response)
     return response

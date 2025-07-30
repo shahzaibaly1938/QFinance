@@ -19,6 +19,7 @@ def ticket_sale(request):
     # Filtering logic
     agent_id = request.GET.get('agent')
     customer_id = request.GET.get('customer')
+    pnr = request.GET.get('pnr')
     flight_from_id = request.GET.get('flight_from')
     flight_to_id = request.GET.get('flight_to')
     start_date = request.GET.get('start_date')
@@ -29,6 +30,8 @@ def ticket_sale(request):
         filters['agent_id'] = agent_id
     if customer_id:
         filters['customer_id'] = customer_id
+    if pnr:
+        filters['pnr'] = pnr
     if flight_from_id:
         filters['flight_from_id'] = flight_from_id
     if flight_to_id:
@@ -57,6 +60,7 @@ def add_ticket(request):
     if request.method == 'POST':
         customer = request.POST.get('customer')
         commission_agent = request.POST.get('agent')
+        manual_commission = request.POST.get('manual_commission')
         pnr = request.POST.get('pnr')
         airline = request.POST.get('airline')
         amount = request.POST.get('amount')
@@ -68,12 +72,20 @@ def add_ticket(request):
         payment = request.POST.get('payment')
         notes = request.POST.get('notes')
 
-        agent = Agent.objects.get(id=commission_agent)
+        
 
         amount_decimal = Decimal(amount)
+        if commission_agent:
+            agent = Agent.objects.get(id=commission_agent)
+            final_commission = amount_decimal * agent.commission_rate
+        else:
+            agent = Agent.objects.get(commission_agent="Manual_Agent")
+            manual_commission = Decimal(manual_commission)
+            final_commission = manual_commission
+
         ticket = Ticketsale(
             customer=Customer.objects.get(id=customer),
-            commission=amount_decimal * agent.commission_rate,
+            commission=final_commission,
             pnr=pnr,
             agent=agent,
             airline=Airline.objects.get(id=airline),

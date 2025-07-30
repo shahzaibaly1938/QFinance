@@ -48,6 +48,9 @@ def add_customers(request):
         email = request.POST.get('email')
         contact = request.POST.get('contact')
         address = request.POST.get('address')
+        if Customer.objects.filter(phone=contact).exists():
+            messages.error(request, "Customer phone already exists!")
+            return redirect('add_customers')
         Customer.objects.create(
             name=name,
             email=email,

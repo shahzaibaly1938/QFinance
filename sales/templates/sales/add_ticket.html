@@ -29,17 +29,24 @@
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent</label>
                 <div class="flex gap-2">
-                    <select name="agent" required
+                    <select name="agent" 
                         class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
                         <option value="">Select Agent</option>
                         {% for agent in commission_agent %}
                         <option value="{{ agent.id }}">{{ agent.commission_agent }}</option>
                         {% endfor %}
                     </select>
+                
                     <button type="button"
                         onclick="window.open('{% url 'add_agents' %}', '_blank', 'width=500,height=600')"
                         class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
                 </div>
+            </div>
+            <!-- Manual Commission -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Custom Commission</label>
+                <input type="number" name="manual_commission" 
+                    class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
             </div>
             <!-- PNR -->
             <div>

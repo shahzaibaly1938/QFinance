@@ -27,7 +27,7 @@
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent:</label>
       <select name="agent"
         class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-        <option value="">All</option>
+        <option value="{{ request.GET.agent }}">Agent ID: {{ request.GET.agent }}</option>
         {% for agent in agents %}
         <option value="{{ agent.id }}">{{ agent.commission_agent }}</option>
         {% endfor %}
@@ -38,17 +38,22 @@
      <select name="customer"
         class="flex-1  px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"
         id="customerSelect">
-        <option value="">Select Customer</option>
+        <option value="{{ request.GET.customer }}">Customer ID: {{ request.GET.customer }}</option>
         {% for customer in customers %}
         <option value="{{ customer.id }}">{{ customer.name }}</option>
         {% endfor %}
       </select>
     </div>
     <div>
+      <label class="block text-[var(--primary-dark)] font-medium mb-1">PNR:</label>
+      <input type="text" name="pnr" value="{{ request.GET.pnr }}"
+        class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+    </div>
+    <div>
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight From:</label>
       <select name="flight_from"
         class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-        <option value="">All</option>
+        <option value="{{ request.GET.flight_from }}">DEST ID: {{ request.GET.flight_from }}</option>
         {% for dest in destinations %}
         <option value="{{ dest.id }}">{{ dest.name }}</option>
         {% endfor %}
@@ -58,7 +63,7 @@
       <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight To:</label>
       <select name="flight_to"
         class="block w-40 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-        <option value="">All</option>
+        <option value="{{ request.GET.flight_to }}">DEST ID: {{ request.GET.flight_to }}</option>
         {% for dest in destinations %}
         <option value="{{ dest.id }}">{{ dest.name }}</option>
         {% endfor %}

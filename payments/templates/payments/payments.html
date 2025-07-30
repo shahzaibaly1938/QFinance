@@ -51,6 +51,7 @@
         <tr>
           <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">#</th>
           <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Customer</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Ticket</th>
           <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Amount</th>
           <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Method</th>
           <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--primary-dark)] uppercase">Date</th>
@@ -63,6 +64,7 @@
         <tr>
           <td class="px-4 py-2">{{ forloop.counter0|add:payments.start_index }}</td>
           <td class="px-4 py-2">{{ payment.customer.name }}</td>
+          <td class="px-4 py-2"><a class="underline-offset-2 underline text-green-500" href="{% url 'ticket_detail' payment.ticket.id %}">{{ payment.ticket.pnr }}</a></td>
           <td class="px-4 py-2">PKR {{ payment.amount }}</td>
           <td class="px-4 py-2">{{ payment.method|title }}</td>
           <td class="px-4 py-2">{{ payment.date|date:"Y-m-d" }}</td>
