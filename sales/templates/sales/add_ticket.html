@@ -29,14 +29,13 @@
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent</label>
                 <div class="flex gap-2">
-                    <select name="agent" 
+                    <select name="agent" id="agentSelect"
                         class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
                         <option value="">Select Agent</option>
                         {% for agent in commission_agent %}
                         <option value="{{ agent.id }}">{{ agent.commission_agent }}</option>
                         {% endfor %}
                     </select>
-                
                     <button type="button"
                         onclick="window.open('{% url 'add_agents' %}', '_blank', 'width=500,height=600')"
                         class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
@@ -45,9 +44,10 @@
             <!-- Manual Commission -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Custom Commission</label>
-                <input type="number" name="manual_commission" 
+                <input type="number" name="manual_commission" id="manualCommission"
                     class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
             </div>
+            
             <!-- PNR -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">PNR</label>
@@ -149,5 +149,37 @@
         </div>
     </form>
 </div>
+<script>
+                const agentSelect = document.getElementById('agentSelect');
+                const manualCommission = document.getElementById('manualCommission');
 
+                function toggleCommissionFields() {
+                    if (agentSelect.value) {
+                        manualCommission.readOnly = true;
+                        manualCommission.value = '';
+                    } else {
+                        manualCommission.readOnly = false;
+                    }
+                }
+
+                function toggleAgentField() {
+                    if (manualCommission.value) {
+                        agentSelect.disabled = true;
+                    } else {
+                        agentSelect.disabled = false;
+                    }
+                }
+
+                agentSelect.addEventListener('change', function () {
+                    toggleCommissionFields();
+                });
+
+                manualCommission.addEventListener('input', function () {
+                    toggleAgentField();
+                });
+
+                // Initialize on page load
+                toggleCommissionFields();
+                toggleAgentField();
+            </script>
 {% endblock %}

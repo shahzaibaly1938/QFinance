@@ -129,6 +129,9 @@ def edit_payment(request, id):
 
 def delete_payment(request, id):
     payment = Payment.objects.get(id=id)
+    if payment.ticket:
+        messages.info(request, 'Cannot delete payment because it is linked to a ticket.')
+        return redirect('payments')
     payment.delete()
     messages.success(request, f'Your {payment.amount} amount is deleted successfully!')
     return redirect('payments')
