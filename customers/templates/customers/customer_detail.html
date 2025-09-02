@@ -24,7 +24,7 @@
               <td class="py-2">{{ customer.phone }}</td>
             </tr>
             <tr>
-              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Address:</th>
+              <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Address / Reference:</th>
               <td class="py-2">{{ customer.address }}</td>
             </tr>
             <!-- Add more fields if needed -->
@@ -41,6 +41,7 @@
           <li>Total Tickets: <span class="font-bold">{{ tickets|length }}</span></li>
           <li>Total Payments: <span class="font-bold">PKR {{ total_payments }}</span></li>
           <li>Unpaid Tickets: <span class="font-bold">{{ unpaid_tickets|length }}</span></li>
+          <li>Paid Tickets: <span class="font-bold">{{ paid_tickets|length }}</span></li>
         </ul>
       </div>
     </div>

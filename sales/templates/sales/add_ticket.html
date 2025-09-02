@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}New Ticket | Q Finance{% endblock %}
+{% block title %}Add Ticket | Q Finance{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto py-8 px-4 md:px-8">
-    <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Add Ticket</h1>
-    <form method="post" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 space-y-6">
+<div class="max-w-4xl mx-auto py-12 px-4 md:px-8">
+    <h1 class="text-2xl font-bold mb-8 text-[var(--primary-dark)] text-center">Add Ticket</h1>
+    <form method="post" id="ticket-form" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-8 flex flex-col gap-6">
         {% csrf_token %}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Customer & Ticket Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <!-- Customer (searchable select) -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
@@ -20,16 +21,16 @@
                         <option value="{{ customer.id }}">{{ customer.name }}</option>
                         {% endfor %}
                     </select>
-                    <button type="button"
-                        onclick="window.open('{% url 'add_customers' %}', '_blank', 'width=500,height=600')"
-                        class="px-3 py-2 h-12 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+                    <a href="{% url 'add_customers' %}"><button type="button"
+
+                        class="px-3 py-2 h-12 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button></a>
                 </div>
             </div>
             <!-- Agent -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent</label>
                 <div class="flex gap-2">
-                    <select name="agent" id="agentSelect"
+                    <select name="agent"
                         class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
                         <option value="">Select Agent</option>
                         {% for agent in commission_agent %}
@@ -44,17 +45,22 @@
             <!-- Manual Commission -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Custom Commission</label>
-                <input type="number" name="manual_commission" id="manualCommission"
+                <input type="number" name="manual_commission" 
                     class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
             </div>
-            
             <!-- PNR -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">PNR</label>
                 <input type="text" name="pnr" required
                     class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
             </div>
-            <!-- Airline -->
+           <!-- Amount -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Amount</label>
+                <input type="number" name="amount" step="0.01" required
+                    class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+            </div>
+             <!-- Airline -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Airline</label>
                 <div class="flex gap-2">
@@ -70,57 +76,7 @@
                         class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
                 </div>
             </div>
-            <!-- Amount -->
-            <div>
-                <label class="block text-[var(--primary-dark)] font-medium mb-1">Amount</label>
-                <input type="number" name="amount" step="0.01" required
-                    class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-            </div>
-            <!-- Reserve Date -->
-            <div>
-                <label class="block text-[var(--primary-dark)] font-medium mb-1">Reserve Date</label>
-                <input type="date" name="reserve_date" required
-                    class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-            </div>
-            <!-- Flight Date -->
-            <div>
-                <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight Date</label>
-                <input type="date" name="flight_date" required
-                    class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-            </div>
-            <!-- Flight From -->
-            <div>
-                <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight From</label>
-                <div class="flex gap-2">
-                    <select name="flight_from" required
-                        class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-                        <option value="">Select Origin</option>
-                        {% for dest in destinations %}
-                        <option value="{{ dest.id }}">{{ dest.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="button"
-                        onclick="window.open('{% url 'add_destination' %}', '_blank', 'width=500,height=600')"
-                        class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
-                </div>
-            </div>
-            <!-- Flight To -->
-            <div>
-                <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight To</label>
-                <div class="flex gap-2">
-                    <select name="flight_to" required
-                        class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-                        <option value="">Select Destination</option>
-                        {% for dest in destinations %}
-                        <option value="{{ dest.id }}">{{ dest.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="button"
-                        onclick="window.open('{% url 'add_destination' %}', '_blank', 'width=500,height=600')"
-                        class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
-                </div>
-            </div>
-            <!-- Reference -->
+           <!-- Reference -->
             <div>
                 <label class="block text-[var(--primary-dark)] font-medium mb-1">Reference</label>
                 <input type="text" name="reference"
@@ -134,52 +90,230 @@
                     <option selected value="unpaid" readonly>Unpaid</option>
                 </select>
             </div>
+
+             <!-- Reserve Date -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Reserve Date</label>
+                <input type="date" name="reserve_date" required
+                    class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
+            </div>
             
-        </div>
-        <!-- Notes -->
-        <div>
+             <!-- Notes -->
+       <div class="md:col-span-2">
             <label class="block text-[var(--primary-dark)] font-medium mb-1">Notes</label>
             <textarea name="notes" rows="3"
                 class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"></textarea>
         </div>
-        <div class="flex justify-end">
-            <button type="submit"
-                class="px-6 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Add
-                Ticket</button>
         </div>
-    </form>
-</div>
-<script>
-                const agentSelect = document.getElementById('agentSelect');
-                const manualCommission = document.getElementById('manualCommission');
+        <!-- Flight Type -->
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-center mb-4">
+            <label class="font-semibold text-[var(--primary-dark)] mb-2 md:mb-0">Flight Type:</label>
+            <div class="flex gap-4">
+                <label class="flex items-center cursor-pointer"></label>
+                    <input type="radio" id="oneway" name="flight_type" value="oneway" class="accent-[var(--primary-dark)] w-6 h-6 mr-2" checked>
+                    <span class="text-md font-semibold text-[var(--primary-dark)]">One Way</span>
+                </label>
+                <label class="flex items-center cursor-pointer"></label>
+                    <input type="radio" id="roundtrip" name="flight_type" value="roundtrip" class="accent-[var(--primary-dark)] w-6 h-6 mr-2">
+                    <span class="text-md font-semibold text-[var(--primary-dark)]">Round Trip</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                    <input type="radio" id="multi" name="flight_type" value="multi" class="accent-[var(--primary-dark)] w-6 h-6 mr-2">
+                    <span class="text-md font-semibold text-[var(--primary-dark)]">Multi-directional</span>
+                </label>
+            </div>
+        </div>
+        <!-- Route Rows -->
+        <div id="routes-container">
+            <div class="route-row flex flex-col md:flex-row gap-4 items-center justify-center">
+                <label for="from-0" class="font-semibold text-[var(--primary-dark)]">From:</label>
+                <div class="flex gap-2 w-full md:w-40">
+                    <select id="to-0" name="from[]" required
+                        class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)] searchable-select">
+                        <option value="">Select Destination</option>
+                        {% for destination in destinations %}
+                        <option value="{{ destination.id }}">{{ destination.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label for="to-0" class="font-semibold text-[var(--primary-dark)] ml-2">To:</label>
+                <div class="flex gap-2 w-full md:w-40">
+                    <select id="to-0" name="to[]" required
+                        class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)] searchable-select">
+                        <option value="">Select Destination</option>
+                        {% for destination in destinations %}
+                        <option value="{{ destination.id }}">{{ destination.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label for="departure_date-0" class="font-semibold text-[var(--primary-dark)] ml-2">Departure Date:</label>
+                <input type="date" id="departure_date-0" name="departure_date[]" class="rounded-lg px-4 py-2 border w-full md:w-40 bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+            </div>
+        </div>
+        <div id="add-route-btn-container" class="flex justify-center" style="display:none;">
+            <button type="button" id="add-route-btn" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition text-md">
+                Add Route
+            </button>
+        </div>
+        <!-- Passengers -->
+        <div class="flex flex-col md:flex-row gap-6 items-center justify-center mt-6">
+            <div class="flex flex-col items-center">
+                <label for="adults" class="font-semibold text-[var(--primary-dark)] mb-1">Adults</label>
+                <input type="number" id="adults" name="adults" min="0" max="9" value="1" class="rounded-xl px-6 py-3 border-2 border-[var(--primary-dark)] w-24 text-center text-lg font-bold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+            </div>
+            <div class="flex flex-col items-center">
+                <label for="children" class="font-semibold text-[var(--primary-dark)] mb-1">Children</label>
+                <input type="number" id="children" name="children" min="0" max="9" value="0" class="rounded-xl px-6 py-3 border-2 border-[var(--primary-dark)] w-24 text-center text-lg font-bold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+            </div>
+            <div class="flex flex-col items-center">
+                <label for="infants" class="font-semibold text-[var(--primary-dark)] mb-1">Infants</label>
+                <input type="number" id="infants" name="infants" min="0" max="9" value="0" class="rounded-xl px-6 py-3 border-2 border-[var(--primary-dark)] w-24 text-center text-lg font-bold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+            </div>
+        </div>
+        <!-- Continue Button -->
+        <div class="flex justify-center mt-6">
+            <button type="button" id="continue-btn" class="px-8 py-3 rounded-xl bg-gradient-to-r from-[var(--primary-dark)] to-[var(--primary)] text-[var(--secondary)] font-bold shadow-lg hover:from-[var(--primary)] hover:to-[var(--primary-dark)] hover:text-[var(--primary-dark)] transition text-lg">
+                Continue
+            </button>
+        </div>
+        <!-- Passenger Details Section (hidden initially) -->
+        <div id="passenger-details-section" class="mt-8 hidden">
+            <h2 class="text-xl font-bold mb-4 text-[var(--primary-dark)] text-center">Passenger Details</h2>
+            <div id="passenger-details-forms" class="flex flex-col gap-6"></div>
+            <div class="flex justify-center mt-6">
+                <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-[var(--primary-dark)] to-[var(--primary)] text-[var(--secondary)] font-bold shadow-lg hover:from-[var(--primary)] hover:to-[var(--primary-dark)] hover:text-[var(--primary-dark)] transition text-lg">
+                    Submit
+                </button>
+            </div>
+        </div>
+        </form>
+        </div>
+        <script>
+            // Searchable select for Destination (similar to Customer)
+            document.querySelectorAll('.searchable-select').forEach(function(select) {
+                select.addEventListener('focus', function() {
+                    this.size = Math.min(8, this.options.length);
+                });
+                select.addEventListener('blur', function() {
+                    this.size = 1;
+                });
+                select.addEventListener('change', function() {
+                    this.size = 1;
+                });
+            });
 
-                function toggleCommissionFields() {
-                    if (agentSelect.value) {
-                        manualCommission.readOnly = true;
-                        manualCommission.value = '';
-                    } else {
-                        manualCommission.readOnly = false;
+            document.getElementById('continue-btn').addEventListener('click', function() {
+                const adults = parseInt(document.getElementById('adults').value, 10) || 0;
+                const children = parseInt(document.getElementById('children').value, 10) || 0;
+                const infants = parseInt(document.getElementById('infants').value, 10) || 0;
+                const passengerDetailsSection = document.getElementById('passenger-details-section');
+                const passengerDetailsForms = document.getElementById('passenger-details-forms');
+                passengerDetailsForms.innerHTML = '';
+
+                function createPassengerForm(type, idx) {
+                    let html = `<div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)]">
+                        <h3 class="col-span-2 text-lg font-bold text-[var(--primary-dark)] mb-2">${type} ${idx + 1}</h3>
+                        <div>
+                            <label class="font-semibold text-[var(--primary-dark)]">Name:</label>
+                            <input type="text" name="${type.toLowerCase()}_name[${idx + 1}]" class="rounded-xl px-4 py-2 border-2 border-[var(--primary-dark)] w-full text-lg font-semibold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]" required>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-[var(--primary-dark)]">Date of Birth:</label>
+                            <input type="date" name="${type.toLowerCase()}_dob[${idx + 1}]" class="rounded-xl px-4 py-2 border-2 border-[var(--primary-dark)] w-full text-lg font-semibold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]" required>
+                        </div>`;
+                    if (type !== 'Infant') {
+                        html += `
+                        <div>
+                            <label class="font-semibold text-[var(--primary-dark)]">Nationality:</label>
+                            <input type="text" name="${type.toLowerCase()}_nationality[${idx + 1}]" class="rounded-xl px-4 py-2 border-2 border-[var(--primary-dark)] w-full text-lg font-semibold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]" required>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-[var(--primary-dark)]">National ID Number:</label>
+                            <input type="text" name="${type.toLowerCase()}_nid[${idx + 1}]" class="rounded-xl px-4 py-2 border-2 border-[var(--primary-dark)] w-full text-lg font-semibold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-[var(--primary-dark)]">Passport Number:</label>
+                            <input type="text" name="${type.toLowerCase()}_passport[${idx + 1}]" class="rounded-xl px-4 py-2 border-2 border-[var(--primary-dark)] w-full text-lg font-semibold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+                        </div>`;
                     }
+                    html += `</div>`;
+                    return html;
                 }
 
-                function toggleAgentField() {
-                    if (manualCommission.value) {
-                        agentSelect.disabled = true;
-                    } else {
-                        agentSelect.disabled = false;
-                    }
+                for (let i = 0; i < adults; i++) {
+                    passengerDetailsForms.innerHTML += createPassengerForm('Adult', i);
                 }
+                for (let i = 0; i < children; i++) {
+                    passengerDetailsForms.innerHTML += createPassengerForm('Child', i);
+                }
+                for (let i = 0; i < infants; i++) {
+                    passengerDetailsForms.innerHTML += createPassengerForm('Infant', i);
+                }
+                passengerDetailsSection.classList.remove('hidden');
+                passengerDetailsSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        </script>
 
-                agentSelect.addEventListener('change', function () {
-                    toggleCommissionFields();
+        <script>
+            const flightTypeRadios = document.querySelectorAll('input[name="flight_type"]');
+            const addRouteBtnContainer = document.getElementById('add-route-btn-container');
+            const addRouteBtn = document.getElementById('add-route-btn');
+            const routesContainer = document.getElementById('routes-container');
+
+            let routeCount = 1;
+
+            flightTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'multi') {
+                        addRouteBtnContainer.style.display = 'flex';
+                    } else {
+                        addRouteBtnContainer.style.display = 'none';
+                        // Remove extra route rows if not multi
+                        while (routesContainer.children.length > 1) {
+                            routesContainer.removeChild(routesContainer.lastChild);
+                        }
+                        routeCount = 1;
+                    }
                 });
+            });
 
-                manualCommission.addEventListener('input', function () {
-                    toggleAgentField();
+            addRouteBtn.addEventListener('click', function() {
+                const newRow = document.createElement('div');
+                newRow.className = 'route-row flex flex-col md:flex-row gap-4 items-center justify-center mt-2';
+                newRow.innerHTML = `
+                    <label for="from-${routeCount}" class="font-semibold text-[var(--primary-dark)]">From:</label>
+                    <select id="to-${routeCount}" name="from[]" class="rounded-lg px-4 py-2 border w-full md:w-40 bg-white text-[var(--primary-dark)] focus:ring-2 focus:ring-[var(--primary-dark)] searchable-select">
+                        <option value="">Select Destination</option>
+                        {% for destination in destinations %}
+                        <option value="{{ destination.id }}">{{ destination.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="to-${routeCount}" class="font-semibold text-[var(--primary-dark)]">To:</label>
+                    <select id="to-${routeCount}" name="to[]" class="rounded-lg px-4 py-2 border w-full md:w-40 bg-white text-[var(--primary-dark)] focus:ring-2 focus:ring-[var(--primary-dark)] searchable-select">
+                        <option value="">Select Destination</option>
+                        {% for destination in destinations %}
+                        <option value="{{ destination.id }}">{{ destination.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="departure_date-${routeCount}" class="font-semibold text-[var(--primary-dark)]">Departure Date:</label>
+                    <input type="date" id="departure_date-${routeCount}" name="departure_date[]" class="rounded-lg px-4 py-2 border bg-white w-full md:w-40 focus:ring-2 focus:ring-[var(--primary-dark)]">
+                `;
+                routesContainer.appendChild(newRow);
+                routeCount++;
+
+                // Re-apply searchable select JS for new selects
+                newRow.querySelectorAll('.searchable-select').forEach(function(select) {
+                    select.addEventListener('focus', function() {
+                        this.size = Math.min(8, this.options.length);
+                    });
+                    select.addEventListener('blur', function() {
+                        this.size = 1;
+                    });
+                    select.addEventListener('change', function() {
+                        this.size = 1;
+                    });
                 });
+            });
+        </script>
 
-                // Initialize on page load
-                toggleCommissionFields();
-                toggleAgentField();
-            </script>
 {% endblock %}

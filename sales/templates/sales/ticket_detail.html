@@ -3,7 +3,7 @@
 {% block title %} Ticket Details | Q Finance {% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto py-8 px-4 md:px-8">
+<div class="max-w-3xl mx-auto py-8 px-4 md:px-8">
   <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Ticket Details</h1>
   <div class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 mb-8">
     <table class="w-full text-left mb-4">
@@ -40,18 +40,8 @@
           <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Reserve Date:</th>
           <td class="py-2">{{ ticket.reserve_date|date:"Y-m-d" }}</td>
         </tr>
-        <tr>
-          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Flight Date:</th>
-          <td class="py-2">{{ ticket.flight_date|date:"Y-m-d" }}</td>
-        </tr>
-        <tr>
-          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Flight From:</th>
-          <td class="py-2">{{ ticket.flight_from.name }}</td>
-        </tr>
-        <tr>
-          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Flight To:</th>
-          <td class="py-2">{{ ticket.flight_to.name }}</td>
-        </tr>
+
+        
         <tr>
           <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Reference:</th>
           <td class="py-2">{{ ticket.reference }}</td>
@@ -72,6 +62,128 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Routes Section -->
+    <div class="mb-8">
+      <h2 class="text-lg font-semibold text-[var(--primary-dark)] mb-4">Routes</h2>
+      <div class="bg-white rounded-xl shadow border border-gray-200 p-4">
+        {% if ticket.routes.all %}
+          <table class="w-full text-sm rounded-lg overflow-hidden">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="px-4 py-2 border text-left">From</th>
+                <th class="px-4 py-2 border text-left">To</th>
+                <th class="px-4 py-2 border text-left">Flight Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for route in ticket.routes.all %}
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-2 border">{{ route.from_destination }}</td>
+                  <td class="px-4 py-2 border">{{ route.to_destination }}</td>
+                  <td class="px-4 py-2 border">{{ route.departure_date|date:"Y-m-d" }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <span class="text-gray-500">No routes available</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Passengers Section -->
+    <div class="mb-8">
+      <h2 class="text-lg font-semibold text-[var(--primary-dark)] mb-4">Passengers</h2>
+      <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+        <!-- Adults -->
+        <div class="bg-white rounded-xl shadow border border-gray-200 p-4">
+          <h3 class="font-semibold text-[var(--primary-dark)] mb-2 text-center">Adults</h3>
+          {% if ticket.adults.all %}
+            <table class="w-full text-sm rounded-lg overflow-hidden mb-2">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="px-2 py-2 border">Name</th>
+                  <th class="px-2 py-2 border">DOB</th>
+                  <th class="px-2 py-2 border">Nationality</th>
+                  <th class="px-2 py-2 border">ID Card</th>
+                  <th class="px-2 py-2 border">Passport</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for passenger in ticket.adults.all %}
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-2 py-2 border">{{ passenger.name }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.dob|date:"Y-m-d" }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.nationality }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.id_number }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.passport_number }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <span class="text-gray-500 block text-center">No adults</span>
+          {% endif %}
+        </div>
+        <!-- Children -->
+        <div class="bg-white rounded-xl shadow border border-gray-200 p-4">
+          <h3 class="font-semibold text-[var(--primary-dark)] mb-2 text-center">Children</h3>
+          {% if ticket.childs.all %}
+            <table class="w-full text-sm rounded-lg overflow-hidden mb-2">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="px-2 py-2 border">Name</th>
+                  <th class="px-2 py-2 border">DOB</th>
+                  <th class="px-2 py-2 border">Nationality</th>
+                  <th class="px-2 py-2 border">ID Card</th>
+                  <th class="px-2 py-2 border">Passport</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for passenger in ticket.childs.all %}
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-2 py-2 border">{{ passenger.name }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.dob|date:"Y-m-d" }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.nationality }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.id_number }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.passport_number }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <span class="text-gray-500 block text-center">No children</span>
+          {% endif %}
+        </div>
+        <!-- Infants -->
+        <div class="bg-white rounded-xl shadow border border-gray-200 p-4">
+          <h3 class="font-semibold text-[var(--primary-dark)] mb-2 text-center">Infants</h3>
+          {% if ticket.infants.all %}
+            <table class="w-full text-sm rounded-lg overflow-hidden mb-2">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="px-2 py-2 border">Name</th>
+                  <th class="px-2 py-2 border">DOB</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for passenger in ticket.infants.all %}
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-2 py-2 border">{{ passenger.name }}</td>
+                    <td class="px-2 py-2 border">{{ passenger.dob|date:"Y-m-d" }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <span class="text-gray-500 block text-center">No infants</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <a href="{% url 'cancel_ticket' ticket.id %}" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Cancel Ticket</a>
     <div class="border-t border-[var(--primary)] pt-4 mt-4">
       <h2 class="text-lg font-semibold text-[var(--primary-dark)] mb-2">Related Details</h2>
       <ul class="list-disc pl-6 text-[var(--primary-dark)]">
@@ -86,5 +198,6 @@
     <a href="{% url 'edit_ticket' ticket.id %}" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Edit</a>
     <a href="javascript:history.back()" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition">Back</a>
   </div>
+ 
 </div>
 {% endblock %}

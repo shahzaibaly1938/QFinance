@@ -44,6 +44,11 @@ def reports(request):
         paginator = Paginator(payment, 20)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
+        if not payment:
+            ticket = Ticketsale.objects.filter(**filters).order_by('-reserve_date')
+            paginator = Paginator(ticket, 20)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
 
 
 
@@ -187,7 +192,7 @@ def export_ticket_sales(request):
             smart_str(str(ticket.reserve_date)),
             smart_str(str(ticket.flight_date)),
             smart_str(float(ticket.amount)),
-            smart_str('Paid' if ticket.paid else 'Due'),           
+            smart_str(ticket.paid),           
             smart_str(ticket.flight_from),
             smart_str(ticket.flight_to),
             smart_str(ticket.airline.name if ticket.airline else 'N/A'),

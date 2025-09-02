@@ -43,22 +43,23 @@ def customers(request):
     return render(request, 'customers/customers.html', context)
 
 def add_customers(request):
+    if request.method == 'GET':
+        next_url = request.META.get('HTTP_REFERER')
+        if next_url:
+            request.session['add_customers_next'] = next_url
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
         contact = request.POST.get('contact')
         address = request.POST.get('address')
-        if Customer.objects.filter(phone=contact).exists():
-            messages.error(request, "Customer phone already exists!")
-            return redirect('add_customers')
         Customer.objects.create(
             name=name,
             email=email,
             phone=contact,
-            address=address,
+            address=address, 
         )
         messages.success(request, "Customer created successfully!")
-        return redirect('customers')
+        return redirect(request.session.get('add_customers_next', 'customers'))
     return render(request, 'customers/add_customers.html')
 
 def customer_detail(request, id):
@@ -71,6 +72,8 @@ def customer_detail(request, id):
         'tickets':tickets,
         'payments':payments,
         'total_payments':total_payments,
+        'unpaid_tickets': tickets.filter(paid='unpaid'),
+        'paid_tickets': tickets.filter(paid='paid'),
     }
     return render(request, 'customers/customer_detail.html', context)
 

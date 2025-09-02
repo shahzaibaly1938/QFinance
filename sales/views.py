@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Ticketsale, Destination, Airline
+from .models import Ticketsale, Destination, Airline, Adults, Childs, Route , Infants
 from customers.models import Customer
 from users.models import Agent
 from django.contrib import messages
@@ -56,6 +56,7 @@ def ticket_sale(request):
     return render(request, 'sales/ticket_sale.html', context)
 
 
+
 def add_ticket(request):
     if request.method == 'POST':
         customer = request.POST.get('customer')
@@ -65,42 +66,129 @@ def add_ticket(request):
         airline = request.POST.get('airline')
         amount = request.POST.get('amount')
         reserve_date = request.POST.get('reserve_date')
-        flight_date = request.POST.get('flight_date')
-        flight_from = request.POST.get('flight_from')
-        flight_to = request.POST.get('flight_to')
         reference = request.POST.get('reference')
         payment = request.POST.get('payment')
         notes = request.POST.get('notes')
+        flight_type = request.POST.get('flight_type')
 
-        
+        # Routes (multi-directional support)
+        from_list = request.POST.getlist('from[]')
+        to_list = request.POST.getlist('to[]')
+        departure_dates = request.POST.getlist('departure_date[]')
 
+        print(f"From List: {from_list}, To List: {to_list}, Departure Dates: {departure_dates}")
+
+
+        # Passengers
+        no_of_adults = int(request.POST.get('adults', 0))
+        no_of_children = int(request.POST.get('children', 0))
+        no_of_infants = int(request.POST.get('infants', 0))
+
+
+        # Passenger details (if needed, can be processed here)
+        # Example: request.POST.getlist('adult_name[]'), etc.
+
+        # For now, save only the first route (extend as needed for multi-route)
+        # Removed unused variables flight_from, flight_to, flight_date
+
+        # Commission calculation (same as before)
         amount_decimal = Decimal(amount)
+        agent = None
+        final_commission = Decimal('0.00')
         if commission_agent:
             agent = Agent.objects.get(id=commission_agent)
             final_commission = amount_decimal * agent.commission_rate
-        else:
-            agent = Agent.objects.get(commission_agent="Manual_Agent")
-            manual_commission = Decimal(manual_commission)
-            final_commission = manual_commission
+            if manual_commission:
+                final_commission += Decimal(manual_commission)
 
         ticket = Ticketsale(
             customer=Customer.objects.get(id=customer),
             commission=final_commission,
+            manual_commission=Decimal(manual_commission) if manual_commission else Decimal('0.00'),
             pnr=pnr,
             agent=agent,
             airline=Airline.objects.get(id=airline),
             amount=amount_decimal,
             reserve_date=reserve_date,
-            flight_date=flight_date,
-            flight_from=Destination.objects.get(id=flight_from),
-            flight_to=Destination.objects.get(id=flight_to),
             reference=reference,
             paid=payment,
             notes=notes,
+            flight_type=flight_type,
+            no_of_adults=no_of_adults,
+            no_of_children=no_of_children,
+            no_of_infants=no_of_infants,
         )
         ticket.save()
+
+        # Save routes
+        for i in range(len(from_list)):
+            route = Route(
+                ticket=ticket,
+                from_destination=Destination.objects.get(id=from_list[i]),
+                to_destination=Destination.objects.get(id=to_list[i]),
+                departure_date=departure_dates[i]
+            )
+            route.save()
+
+        # Save Adults
+        adults_objs = []
+        if no_of_adults > 0:
+            for i in range(1, no_of_adults+1):
+                name = request.POST.get(f'adult_name[{i}]')
+                dob = request.POST.get(f'adult_dob[{i}]')
+                nationality = request.POST.get(f'adult_nationality[{i}]')
+                nid = request.POST.get(f'adult_nid[{i}]')
+                passport_number = request.POST.get(f'adult_passport[{i}]')
+                adult = Adults(
+                    ticket=ticket,
+                    name=name,
+                    dob=dob if dob else None,
+                    nationality=nationality if nationality else None,
+                    id_number=nid if nid else None,
+                    passport_number=passport_number if passport_number else None,
+                )
+                adult.save()
+                adults_objs.append(adult)
+
+        # Save Children
+        children_objs = []
+        if no_of_children > 0:
+            for i in range(1, no_of_children+1):
+                name = request.POST.get(f'child_name[{i}]')
+                dob = request.POST.get(f'child_dob[{i}]')
+                nationality = request.POST.get(f'child_nationality[{i}]')
+                nid = request.POST.get(f'child_nid[{i}]')
+                passport_number = request.POST.get(f'child_passport[{i}]')
+                child = Childs(
+                    ticket=ticket,
+                    name=name,
+                    dob=dob if dob else None,
+                    nationality=nationality if nationality else None,
+                    id_number=nid if nid else None,
+                    passport_number=passport_number if passport_number else None,
+                )
+                child.save()
+                children_objs.append(child)
+
+        # Save Infants
+        infants_objs = []
+        if no_of_infants > 0:
+            for i in range(1, no_of_infants+1):
+                name = request.POST.get(f'infant_name[{i}]')
+                dob = request.POST.get(f'infant_dob[{i}]')
+                infant = Infants(
+                    ticket=ticket,
+                    name=name,
+                    dob=dob if dob else None,
+                )
+                infant.save()
+                infants_objs.append(infant)
+
+        # For multi-directional, you may want to save multiple Ticketsale objects or related route objects
+
+        # Redirect to payment step (pass ticket.id if ticket is created)
         return redirect('payment_process', ticket.id)
-        
+        # return redirect('ticket_sale')
 
     customers = Customer.objects.all()
     commission_agent = Agent.objects.all()
@@ -108,13 +196,12 @@ def add_ticket(request):
     airlines = Airline.objects.all()
 
     context = {
-        'customers':customers,
-        'commission_agent':commission_agent,
-        'destinations':destinations,
-        'airlines':airlines,
+        'customers': customers,
+        'commission_agent': commission_agent,
+        'destinations': destinations,
+        'airlines': airlines,
     }
     return render(request, 'sales/add_ticket.html', context)
-
 def payment_process(request, id):
     ticket = Ticketsale.objects.get(id=id)
     return render(request, 'sales/payment_step.html', {'ticket':ticket})
@@ -130,49 +217,129 @@ def delete_ticket(request, id):
     return redirect('ticket_sale')
 
 def edit_ticket(request, id):
+    ticket = Ticketsale.objects.get(id=id)
     if request.method == 'POST':
-        agent = request.POST.get('agent')
+        customer = request.POST.get('customer')
+        commission_agent = request.POST.get('agent')
+        manual_commission = request.POST.get('manual_commission')
         pnr = request.POST.get('pnr')
         airline = request.POST.get('airline')
         amount = request.POST.get('amount')
         reserve_date = request.POST.get('reserve_date')
-        flight_date = request.POST.get('flight_date')
-        flight_from = request.POST.get('flight_from')
-        flight_to = request.POST.get('flight_to')
         reference = request.POST.get('reference')
         payment = request.POST.get('payment')
         notes = request.POST.get('notes')
+        flight_type = request.POST.get('flight_type')
 
-        ticket = Ticketsale.objects.get(id=id)
-    
-        ticket.agent = Agent.objects.get(id=agent)
+        # Routes (multi-directional support)
+        from_list = request.POST.getlist('from[]')
+        to_list = request.POST.getlist('to[]')
+        departure_dates = request.POST.getlist('departure_date[]')
+
+        no_of_adults = int(request.POST.get('adults', 0))
+        no_of_children = int(request.POST.get('children', 0))
+        no_of_infants = int(request.POST.get('infants', 0))
+
+        amount_decimal = Decimal(amount)
+        agent = None
+        final_commission = Decimal('0.00')
+        if commission_agent:
+            agent = Agent.objects.get(id=commission_agent)
+            final_commission = amount_decimal * agent.commission_rate
+            if manual_commission:
+                final_commission += Decimal(manual_commission)
+                
+
+        ticket.customer = Customer.objects.get(id=customer)
+        ticket.agent = agent
+        ticket.commission = final_commission
+        ticket.manual_commission = Decimal(manual_commission) if manual_commission else Decimal('0.00')
         ticket.pnr = pnr
         ticket.airline = Airline.objects.get(id=airline)
-        ticket.amount = amount
+        ticket.amount = amount_decimal
         ticket.reserve_date = reserve_date
-        ticket.flight_date = flight_date
-        ticket.flight_from = Destination.objects.get(id=flight_from)
-        ticket.flight_to = Destination.objects.get(id=flight_to)
         ticket.reference = reference
         ticket.paid = payment
         ticket.notes = notes
-
+        ticket.flight_type = flight_type
+        ticket.no_of_adults = no_of_adults
+        ticket.no_of_children = no_of_children
+        ticket.no_of_infants = no_of_infants
         ticket.save()
+
+        # Update routes: delete old and add new
+        Route.objects.filter(ticket=ticket).delete()
+        for i in range(len(from_list)):
+            route = Route(
+                ticket=ticket,
+                from_destination=Destination.objects.get(id=from_list[i]),
+                to_destination=Destination.objects.get(id=to_list[i]),
+                departure_date=departure_dates[i]
+            )
+            route.save()
+
+        # Update Adults
+        Adults.objects.filter(ticket=ticket).delete()
+        for i in range(1, no_of_adults+1):
+            name = request.POST.get(f'adult_name[{i}]')
+            dob = request.POST.get(f'adult_dob[{i}]')
+            nationality = request.POST.get(f'adult_nationality[{i}]')
+            nid = request.POST.get(f'adult_nid[{i}]')
+            passport_number = request.POST.get(f'adult_passport[{i}]')
+            adult = Adults(
+                ticket=ticket,
+                name=name,
+                dob=dob if dob else None,
+                nationality=nationality if nationality else None,
+                id_number=nid if nid else None,
+                passport_number=passport_number if passport_number else None,
+            )
+            adult.save()
+
+        # Update Children
+        Childs.objects.filter(ticket=ticket).delete()
+        for i in range(1, no_of_children+1):
+            name = request.POST.get(f'child_name[{i}]')
+            dob = request.POST.get(f'child_dob[{i}]')
+            nationality = request.POST.get(f'child_nationality[{i}]')
+            nid = request.POST.get(f'child_nid[{i}]')
+            passport_number = request.POST.get(f'child_passport[{i}]')
+            child = Childs(
+                ticket=ticket,
+                name=name,
+                dob=dob if dob else None,
+                nationality=nationality if nationality else None,
+                id_number=nid if nid else None,
+                passport_number=passport_number if passport_number else None,
+            )
+            child.save()
+
+        # Update Infants
+        Infants.objects.filter(ticket=ticket).delete()
+        for i in range(1, no_of_infants+1):
+            name = request.POST.get(f'infant_name[{i}]')
+            dob = request.POST.get(f'infant_dob[{i}]')
+            infant = Infants(
+                ticket=ticket,
+                name=name,
+                dob=dob if dob else None,
+            )
+            infant.save()
 
         return redirect('ticket_sale')
 
-    ticket = Ticketsale.objects.get(id=id)
     customers = Customer.objects.all()
     agents = Agent.objects.all()
     destinations = Destination.objects.all()
     airlines = Airline.objects.all()
 
     context = {
-        'customer':ticket.customer,
-        'agents':agents,
-        'destinations':destinations,
-        'airlines':airlines,
-        'ticket':ticket,
+        'customers': customers,
+        'customer': ticket.customer,
+        'agents': agents,
+        'destinations': destinations,
+        'airlines': airlines,
+        'ticket': ticket,
     }
     return render(request, 'sales/edit_ticket.html', context)
 
@@ -224,12 +391,18 @@ def destinations(request):
     return render(request, 'sales/destinations.html', context)
 
 def add_destination(request):
+    # Store the referring URL (if any) to use after adding a destination
+    if request.method == 'GET':
+        next_url = request.META.get('HTTP_REFERER')
+        if next_url:
+            request.session['add_destination_next'] = next_url
     if request.method == 'POST':
         name = request.POST.get('name')
         destination = Destination(name=name)
         destination.save()
         messages.success(request, 'Destination added successfully!')
-        return redirect('destinations')
+        # Redirect to the referring page if available, otherwise to destinations
+        return redirect(request.session.get('add_destination_next', 'destinations'))
     return render(request, 'sales/add_destinations.html')
 
 def edit_destination(request, id):
@@ -247,3 +420,11 @@ def delete_destination(request, id):
     if request.method == "POST":
         destination.delete()
     return redirect('destinations')
+
+
+# Cancel Ticket View
+
+def cancel_ticket(request, id):
+    ticket = Ticketsale.objects.get(id=id)
+    
+    return render(request, 'sales/cancel_ticket.html', {'ticket':ticket})

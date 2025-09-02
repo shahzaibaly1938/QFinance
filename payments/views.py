@@ -52,6 +52,9 @@ def payment_detail(request, id):
 
 def add_payment(request, id):
     ticket = Ticketsale.objects.get(id=id)
+    if ticket.paid == 'paid':
+        messages.error(request, 'This ticket has already been paid.')
+        return redirect(request.META.get('HTTP_REFERER', 'unpaid_tickets'))
     customer = ticket.customer
     if request.method == 'POST':
         payment_method = request.POST.get('method')
@@ -130,8 +133,8 @@ def edit_payment(request, id):
 def delete_payment(request, id):
     payment = Payment.objects.get(id=id)
     if payment.ticket:
-        messages.info(request, 'Cannot delete payment because it is linked to a ticket.')
-        return redirect('payments')
+       payment.ticket.paid = 'unpaid'
+       payment.ticket.save()
     payment.delete()
     messages.success(request, f'Your {payment.amount} amount is deleted successfully!')
     return redirect('payments')

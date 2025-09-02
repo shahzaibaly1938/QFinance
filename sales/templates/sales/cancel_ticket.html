@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Cancel Ticket | Q Finance{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-12 px-4 md:px-8">
+  <h1 class="text-2xl font-bold mb-8 text-[var(--primary-dark)] text-center">Cancel Ticket</h1>
+  <div class="bg-[var(--secondary)] rounded-xl shadow px-6 py-8 flex flex-col gap-6 items-center">
+    <p class="text-[var(--primary-dark)] text-lg mb-4 text-center">Select the cancellation reason:</p>
+    <div class="flex flex-col gap-4 w-full items-center justify-center">
+      <button class="w-full px-6 py-4 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition text-xl">
+        Auto Cancelled
+      </button>
+      <button class="w-full px-6 py-4 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold shadow hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition text-xl">
+        Self Cancelled
+      </button>
+      <button class="w-full px-6 py-4 rounded-lg bg-[var(--primary)] text-[var(--primary-dark)] font-semibold shadow hover:bg-[var(--primary-dark)] hover:text-[var(--secondary)] transition text-xl">
+        No Show
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

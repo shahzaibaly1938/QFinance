@@ -107,8 +107,8 @@
           <td class="px-4 py-2">{{ ticket.pnr }}</td>
           <td class="px-4 py-2">{{ ticket.agent.commission_agent }}</td>
           <td class="px-4 py-2">{{ ticket.customer.name }}</td>
-          <td class="px-4 py-2">{{ ticket.flight_from }} to {{ ticket.flight_to }}</td>
-          <td class="px-4 py-2">{{ ticket.flight_date|date:"Y-m-d" }}</td>
+          <td class="px-4 py-2">{{ ticket.routes.all.0.from_destination }} to {{ ticket.routes.all.0.to_destination }}</td>
+          <td class="px-4 py-2">{{ ticket.routes.all.0.departure_date|date:"Y-m-d" }}</td>
           <td class="px-4 py-2">{{ ticket.reserve_date|date:"Y-m-d" }}</td>
           <td class="px-4 py-2">
 

@@ -1,123 +1,561 @@
 {% extends "base.html" %}
 
-{% block title %} Edit Ticket | Q Finance {% endblock %}
+{% block title %}Edit Ticket | Q Finance{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto py-8 px-4 md:px-8">
-  <h1 class="text-2xl font-bold mb-6 text-[var(--primary-dark)]">Edit Ticket</h1>
-  <form method="post" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-6 space-y-6">
-    {% csrf_token %}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Customer -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
-        <div class="flex gap-2">
-          <input name="customer" value="{{ customer.name }}" readonly required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-         
-        </div>
-      </div>
-      <!-- Agent -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent</label>
-        <div class="flex gap-2">
-          <select name="agent" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-            <option value="">Select Agent</option>
-            {% for agent in agents %}
-              <option value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}selected{% endif %}>{{ agent.commission_agent }}</option>
-            {% endfor %}
-          </select>
-          <button type="button" onclick="window.open('{% url 'add_agents' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
-        </div>
-      </div>
-      <!-- PNR -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">PNR</label>
-        <input type="text" name="pnr" value="{{ ticket.pnr }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-      </div>
-      <!-- Airline -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Airline</label>
-        <div class="flex gap-2">
-          <select name="airline" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-            <option value="">Select Airline</option>
-            {% for airline in airlines %}
-              <option value="{{ airline.id }}" {% if ticket.airline.id == airline.id %}selected{% endif %}>{{ airline.name }}</option>
-            {% endfor %}
-          </select>
-          <button type="button" onclick="window.open('{% url 'add_airline' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
-        </div>
-      </div>
-      <!-- Amount -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Amount</label>
-        <input type="number" name="amount" step="0.01" value="{{ ticket.amount }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-      </div>
-      <!-- Reserve Date -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Reserve Date</label>
-        <input type="date" name="reserve_date" value="{{ ticket.reserve_date|date:'Y-m-d' }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]" />
-      </div>
-      <!-- Flight Date -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight Date</label>
-        <input type="date" name="flight_date" value="{{ ticket.flight_date|date:'Y-m-d' }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-      </div>
-      <!-- Flight From -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight From</label>
-        <div class="flex gap-2">
-          <select name="flight_from" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-            <option value="">Select Origin</option>
-            {% for dest in destinations %}
-              <option value="{{ dest.id }}" {% if ticket.flight_from.id == dest.id %}selected{% endif %}>{{ dest.name }}</option>
-            {% endfor %}
-          </select>
-          <button type="button" onclick="window.open('{% url 'add_destination' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
-        </div>
-      </div>
-      <!-- Flight To -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Flight To</label>
-        <div class="flex gap-2">
-          <select name="flight_to" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">
-            <option value="">Select Destination</option>
-            {% for dest in destinations %}
-              <option value="{{ dest.id }}" {% if ticket.flight_to.id == dest.id %}selected{% endif %}>{{ dest.name }}</option>
-            {% endfor %}
-          </select>
-          <button type="button" onclick="window.open('{% url 'add_destination' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
-        </div>
-      </div>
-      <!-- Reference -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Reference</label>
-        <input type="text" name="reference" value="{{ ticket.reference }}" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-      </div>
-      <!-- Paid -->
-      <div>
-        <label class="block text-[var(--primary-dark)] font-medium mb-1">Payment Status</label>
-        {% if ticket.paid == 'paid' %}
-        <input type="text" name="payment" value="{{ ticket.paid }}" readonly class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-        {% endif %}
-        {% if ticket.paid == 'unpaid' %}
-        <input type="text" name="payment" value="{{ ticket.paid }}" readonly class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]" />
-        {% endif %}
-      </div>
-      <div>
-                <button type="button" onclick="window.open('{% url 'add_payment' ticket.id %}', '_blank', 'width=500,height=600')"
-                    class="px-3 py-2 mt-7 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+
-                    Add payment</button>
+<div class="max-w-5xl mx-auto py-12 px-4 md:px-8">
+    <h1 class="text-2xl font-bold mb-8 text-[var(--primary-dark)] text-center">Edit Ticket</h1>
+    <form method="post" class="bg-[var(--secondary)] rounded-xl shadow px-6 py-8 flex flex-col gap-6">
+        {% csrf_token %}
+        <!-- Customer & Ticket Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+           <!-- Customer (searchable select) -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Customer</label>
+                <div class="flex gap-2">
+                    <select name="customer" required
+                        class="flex-1  px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]"
+                        id="customerSelect">
+                        <option selected value="{{customer.id}}">{{customer.name}}</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}">{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <a href="{% url 'add_customers' %}"><button type="button"
+
+                        class="px-3 py-2 h-12 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button></a>
+                </div>
             </div>
-    </div>
-    <!-- Notes -->
-    <div>
-      <label class="block text-[var(--primary-dark)] font-medium mb-1">Notes</label>
-      <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var(--primary-dark)]">{{ ticket.notes }}</textarea>
-    </div>
-    <div class="flex justify-between">
-      <a href="{% url 'ticket_sale' %}" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Back to Tickets</a>
-      <button type="submit" class="px-6 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">Update Ticket</button>
-    </div>
-  </form>
+            <!-- Agent -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Agent</label>
+                <div class="flex gap-2">
+                    <select name="agent" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]">
+                        <option value="">Select Agent</option>
+                        {% for agent in agents %}
+                        <option value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}selected{% endif %}>{{ agent.commission_agent }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" onclick="window.open('{% url 'add_agents' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--primary-dark)] transition">+</button>
+                </div>
+            </div>
+            <!-- Manual Commission -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Custom Commission</label>
+                <input type="number" name="manual_commission" value="{{ ticket.manual_commission }}" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]" />
+            </div>
+            <!-- PNR -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">PNR</label>
+                <input type="text" name="pnr" value="{{ ticket.pnr }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]" />
+            </div>
+            <!-- Amount -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Amount</label>
+                <input type="number" name="amount" step="0.01" value="{{ ticket.amount }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]" />
+            </div>
+            <!-- Airline -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Airline</label>
+                <div class="flex gap-2">
+                    <select name="airline" required class="flex-1 px-3 py-2 border border-[var,--primary)] rounded-lg bg-white text-[var,--primary-dark)]">
+                        <option value="">Select Airline</option>
+                        {% for airline in airlines %}
+                        <option value="{{ airline.id }}" {% if ticket.airline.id == airline.id %}selected{% endif %}>{{ airline.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" onclick="window.open('{% url 'add_airline' %}', '_blank', 'width=500,height=600')" class="px-3 py-2 rounded-lg bg-[var(--primary-dark)] text-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var,--primary-dark)] transition">+</button>
+                </div>
+            </div>
+            <!-- Reference -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Reference</label>
+                <input type="text" name="reference" value="{{ ticket.reference }}" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]" />
+            </div>
+            <!-- Paid (readonly) -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Payment Status</label>
+                <input type="text" name="payment" value="{{ ticket.paid }}" readonly class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-gray-100 text-[var,--primary-dark)]" />
+            </div>
+            <!-- Reserve Date -->
+            <div>
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Reserve Date</label>
+                <input type="date" name="reserve_date" value="{{ ticket.reserve_date|date:'Y-m-d' }}" required class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]" />
+            </div>
+            <!-- Notes -->
+            <div class="md:col-span-2">
+                <label class="block text-[var(--primary-dark)] font-medium mb-1">Notes</label>
+                <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)]">{{ ticket.notes }}</textarea>
+            </div>
+        </div>
+        <!-- Flight Type -->
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-center mb-4">
+            <label class="font-semibold text-[var(--primary-dark)] mb-2 md:mb-0">Flight Type:</label>
+            <div class="flex gap-4">
+                <label class="flex items-center cursor-pointer">
+                    <input type="radio" id="oneway" name="flight_type" value="oneway" class="accent-[var(--primary-dark)] w-6 h-6 mr-2" {% if ticket.flight_type == 'oneway' %}checked{% endif %}>
+                    <span class="text-md font-semibold text-[var(--primary-dark)]">One Way</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                    <input type="radio" id="roundtrip" name="flight_type" value="roundtrip" class="accent-[var(--primary-dark)] w-6 h-6 mr-2" {% if ticket.flight_type == 'roundtrip' %}checked{% endif %}>
+                    <span class="text-md font-semibold text-[var,--primary-dark)]">Round Trip</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                    <input type="radio" id="multi" name="flight_type" value="multi" class="accent-[var(--primary-dark)] w-6 h-6 mr-2" {% if ticket.flight_type == 'multi' %}checked{% endif %}>
+                    <span class="text-md font-semibold text-[var,--primary-dark)]">Multi-directional</span>
+                </label>
+            </div>
+        </div>
+        <!-- Route Rows -->
+        <div id="routes-container">
+            {% for route in ticket.routes.all %}
+            <div class="route-row flex flex-col md:flex-row gap-4 items-center justify-center mb-2">
+                <label class="font-semibold text-[var(--primary-dark)]">From:</label>
+                <div class="flex gap-2 w-full md:w-40">
+                    <select name="from[]" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)] searchable-select">
+                        <option value="">Select Destination</option>
+                        {% for destination in destinations %}
+                        <option value="{{ destination.id }}" {% if route.from_destination.id == destination.id %}selected{% endif %}>{{ destination.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="font-semibold text-[var,--primary-dark)] ml-2">To:</label>
+                <div class="flex gap-2 w-full md:w-40">
+                    <select name="to[]" required class="flex-1 px-3 py-2 border border-[var,--primary)] rounded-lg bg-white text-[var,--primary-dark)] searchable-select">
+                        <option value="">Select Destination</option>
+                        {% for destination in destinations %}
+                        <option value="{{ destination.id }}" {% if route.to_destination.id == destination.id %}selected{% endif %}>{{ destination.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="font-semibold text-[var,--primary-dark)] ml-2">Departure Date:</label>
+                <input type="date" name="departure_date[]" value="{{ route.departure_date|date:'Y-m-d' }}" class="rounded-lg px-4 py-2 border w-full md:w-40 bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+                <button type="button" class="remove-route-btn px-2 py-1 ml-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+            </div>
+            {% endfor %}
+            {% if ticket.routes.count == 0 %}
+            <div class="route-row flex flex-col md:flex-row gap-4 items-center justify-center">
+                <label class="font-semibold text-[var,--primary-dark)]">From:</label>
+                <div class="flex gap-2 w-full md:w-40">
+                    <select name="from[]" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)] searchable-select">
+                        <option value="">Select Destination</option>
+                        {% for destination in destinations %}
+                        <option value="{{ destination.id }}">{{ destination.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="font-semibold text-[var,--primary-dark)] ml-2">To:</label>
+                <div class="flex gap-2 w-full md:w-40">
+                    <select name="to[]" required class="flex-1 px-3 py-2 border border-[var,--primary)] rounded-lg bg-white text-[var,--primary-dark)] searchable-select">
+                        <option value="">Select Destination</option>
+                        {% for destination in destinations %}
+                        <option value="{{ destination.id }}">{{ destination.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <label class="font-semibold text-[var,--primary-dark)] ml-2">Departure Date:</label>
+                <input type="date" name="departure_date[]" class="rounded-lg px-4 py-2 border w-full md:w-40 bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+                <button type="button" class="remove-route-btn px-2 py-1 ml-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+            </div>
+            {% endif %}
+        </div>
+        <div id="add-route-btn-container" class="flex justify-center mt-2">
+            <button type="button" id="add-route-btn" class="px-4 py-2 rounded-lg bg-[var(--primary-dark)] text-[var,--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var,--primary-dark)] transition text-md">
+                Add Route
+            </button>
+        </div>
+        <!-- Passengers Count & Continue Button -->
+        <div class="flex flex-col md:flex-row gap-6 items-center justify-center mt-6">
+            <div class="flex flex-col items-center">
+                <label for="adults" class="font-semibold text-[var(--primary-dark)] mb-1">Adults</label>
+                <input type="number" id="adults" name="adults" min="0" max="9" value="{{ ticket.adults.count|default:1 }}" class="rounded-xl px-6 py-3 border-2 border-[var(--primary-dark)] w-24 text-center text-lg font-bold bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+            </div>
+            <div class="flex flex-col items-center">
+                <label for="children" class="font-semibold text-[var,--primary-dark)] mb-1">Children</label>
+                <input type="number" id="children" name="children" min="0" max="9" value="{{ ticket.childs.count|default:0 }}" class="rounded-xl px-6 py-3 border-2 border-[var,--primary-dark)] w-24 text-center text-lg font-bold bg-white focus:ring-2 focus:ring-[var,--primary-dark)]">
+            </div>
+            <div class="flex flex-col items-center">
+                <label for="infants" class="font-semibold text-[var,--primary-dark)] mb-1">Infants</label>
+                <input type="number" id="infants" name="infants" min="0" max="9" value="{{ ticket.infants.count|default:0 }}" class="rounded-xl px-6 py-3 border-2 border-[var,--primary-dark)] w-24 text-center text-lg font-bold bg-white focus:ring-2 focus:ring-[var,--primary-dark)]">
+            </div>
+        </div>
+        <div class="flex justify-center mt-4">
+            <button type="button" id="continue-btn" class="px-6 py-2 rounded-xl bg-[var(--primary-dark)] text-[var,--secondary] font-bold shadow hover:bg-[var(--primary)] hover:text-[var,--primary-dark)] transition text-lg">
+                Continue
+            </button>
+        </div>
+
+        <!-- Passenger Details Section -->
+        <div id="passenger-details-section" class="mt-8">
+            <h2 class="text-xl font-bold mb-4 text-[var(--primary-dark)] text-center">Passenger Details</h2>
+            <div id="passenger-details-forms" class="flex flex-col gap-6">
+                <!-- Initial forms rendered by Django -->
+                {% for passenger in ticket.adults.all %}
+                <div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] adult-row">
+                    <h3 class="col-span-2 text-lg font-bold text-[var(--primary-dark)] mb-2">Adult {{ forloop.counter }}</h3>
+                    <input type="hidden" name="adult_id[{{ forloop.counter }}]" value="{{ passenger.id }}">
+                    <div>
+                        <label class="font-semibold text-[var(--primary-dark)]">Name:</label>
+                        <input type="text" name="adult_name[{{ forloop.counter }}]" value="{{ passenger.name }}" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var(--primary-dark)]">Date of Birth:</label>
+                        <input type="date" name="adult_dob[{{ forloop.counter }}]" value="{{ passenger.dob|date:'Y-m-d' }}" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">Nationality:</label>
+                        <input type="text" name="adult_nationality[{{ forloop.counter }}]" value="{{ passenger.nationality }}" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">National ID Number:</label>
+                        <input type="text" name="adult_nid[{{ forloop.counter }}]" value="{{ passenger.id_number }}">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">Passport Number:</label>
+                        <input type="text" name="adult_passport[{{ forloop.counter }}]" value="{{ passenger.passport_number }}">
+                    </div>
+                    <button type="button" class="remove-adult-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+                </div>
+                {% endfor %}
+                {% for passenger in ticket.childs.all %}
+                <div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] child-row">
+                    <h3 class="col-span-2 text-lg font-bold text-[var,--primary-dark)] mb-2">Child {{ forloop.counter }}</h3>
+                    <input type="hidden" name="child_id[{{ forloop.counter }}]" value="{{ passenger.id }}">
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">Name:</label>
+                        <input type="text" name="child_name[{{ forloop.counter }}]" value="{{ passenger.name }}" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">Date of Birth:</label>
+                        <input type="date" name="child_dob[{{ forloop.counter }}]" value="{{ passenger.dob|date:'Y-m-d' }}" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">Nationality:</label>
+                        <input type="text" name="child_nationality[{{ forloop.counter }}]" value="{{ passenger.nationality }}" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">National ID Number:</label>
+                        <input type="text" name="child_nid[{{ forloop.counter }}]" value="{{ passenger.id_number }}">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">Passport Number:</label>
+                        <input type="text" name="child_passport[{{ forloop.counter }}]" value="{{ passenger.passport_number }}">
+                    </div>
+                    <button type="button" class="remove-child-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+                </div>
+                {% endfor %}
+                {% for passenger in ticket.infants.all %}
+                <div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] infant-row">
+                    <h3 class="col-span-2 text-lg font-bold text-[var,--primary-dark)] mb-2">Infant {{ forloop.counter }}</h3>
+                    <input type="hidden" name="infant_id[{{ forloop.counter }}]" value="{{ passenger.id }}">
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">Name:</label>
+                        <input type="text" name="infant_name[{{ forloop.counter }}]" value="{{ passenger.name }}" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-[var,--primary-dark)]">Date of Birth:</label>
+                        <input type="date" name="infant_dob[{{ forloop.counter }}]" value="{{ passenger.dob|date:'Y-m-d' }}" required>
+                    </div>
+                    <button type="button" class="remove-infant-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="flex justify-center mt-2">
+                <button type="button" id="add-adult-btn" class="px-4 py-2 rounded bg-[var(--primary-dark)] text-[var,--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var,--primary-dark)]">Add Adult</button>
+                <button type="button" id="add-child-btn" class="px-4 py-2 rounded bg-[var(--primary-dark)] text-[var,--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var,--primary-dark)] ml-2">Add Child</button>
+                <button type="button" id="add-infant-btn" class="px-4 py-2 rounded bg-[var(--primary-dark)] text-[var,--secondary)] font-semibold shadow hover:bg-[var(--primary)] hover:text-[var,--primary-dark)] ml-2">Add Infant</button>
+            </div>
+        </div>
+
+        <!-- Place this inside your form, after the passenger details section -->
+        <div class="flex justify-center mt-8">
+            <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-[var(--primary-dark)] to-[var(--primary)] text-[var(--secondary)] font-bold shadow-lg hover:from-[var(--primary)] hover:to-[var(--primary-dark)] hover:text-[var(--primary-dark)] transition text-lg">
+                Update Ticket
+            </button>
+        </div>
+    </form>
 </div>
+
+<script>
+    // Add/remove adults
+    document.getElementById('add-adult-btn').addEventListener('click', function() {
+        const container = document.getElementById('passenger-details-forms');
+        const idx = container.querySelectorAll('.adult-row').length;
+        const newRow = document.createElement('div');
+        newRow.className = 'bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] adult-row';
+        newRow.innerHTML = `
+            <h3 class="col-span-2 text-lg font-bold text-[var(--primary-dark)] mb-2">Adult ${idx + 1}</h3>
+            <input type="hidden" name="adult_id[${idx + 1}]" value="">
+            <div>
+                <label class="font-semibold text-[var(--primary-dark)]">Name:</label>
+                <input type="text" name="adult_name[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var(--primary-dark)]">Date of Birth:</label>
+                <input type="date" name="adult_dob[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Nationality:</label>
+                <input type="text" name="adult_nationality[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">National ID Number:</label>
+                <input type="text" name="adult_nid[${idx + 1}]">
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Passport Number:</label>
+                <input type="text" name="adult_passport[${idx + 1}]">
+            </div>
+            <button type="button" class="remove-adult-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+        `;
+        container.appendChild(newRow);
+    });
+    document.getElementById('passenger-details-forms').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-adult-btn')) {
+            e.target.parentElement.remove();
+        }
+    });
+    // Repeat for children and infants
+</script>
+
+<!-- Route Add/Remove Logic -->
+<script>
+    document.getElementById('add-route-btn').addEventListener('click', function() {
+        const routesContainer = document.getElementById('routes-container');
+        const newRow = document.createElement('div');
+        newRow.className = 'route-row flex flex-col md:flex-row gap-4 items-center justify-center mb-2';
+        newRow.innerHTML = `
+            <label class="font-semibold text-[var(--primary-dark)]">From:</label>
+            <div class="flex gap-2 w-full md:w-40">
+                <select name="from[]" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)] searchable-select">
+                    <option value="">Select Destination</option>
+                    {% for destination in destinations %}
+                    <option value="{{ destination.id }}">{{ destination.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <label class="font-semibold text-[var,--primary-dark)] ml-2">To:</label>
+            <div class="flex gap-2 w-full md:w-40">
+                <select name="to[]" required class="flex-1 px-3 py-2 border border-[var(--primary)] rounded-lg bg-white text-[var,--primary-dark)] searchable-select">
+                    <option value="">Select Destination</option>
+                    {% for destination in destinations %}
+                    <option value="{{ destination.id }}">{{ destination.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <label class="font-semibold text-[var,--primary-dark)] ml-2">Departure Date:</label>
+            <input type="date" name="departure_date[]" class="rounded-lg px-4 py-2 border w-full md:w-40 bg-white focus:ring-2 focus:ring-[var(--primary-dark)]">
+            <button type="button" class="remove-route-btn px-2 py-1 ml-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+        `;
+        routesContainer.appendChild(newRow);
+    });
+
+    document.getElementById('routes-container').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-route-btn')) {
+            e.target.parentElement.remove();
+        }
+    });
+</script>
+
+<!-- Passenger Add/Remove/Continue Logic -->
+<script>
+    // Helper functions for blank forms
+    function createAdultForm(idx) {
+        return `
+        <div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] adult-row">
+            <h3 class="col-span-2 text-lg font-bold text-[var(--primary-dark)] mb-2">Adult ${idx + 1}</h3>
+            <input type="hidden" name="adult_id[${idx + 1}]" value="">
+            <div>
+                <label class="font-semibold text-[var(--primary-dark)]">Name:</label>
+                <input type="text" name="adult_name[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var(--primary-dark)]">Date of Birth:</label>
+                <input type="date" name="adult_dob[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Nationality:</label>
+                <input type="text" name="adult_nationality[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">National ID Number:</label>
+                <input type="text" name="adult_nid[${idx + 1}]">
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Passport Number:</label>
+                <input type="text" name="adult_passport[${idx + 1}]">
+            </div>
+            <button type="button" class="remove-adult-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+        </div>`;
+    }
+    function createChildForm(idx) {
+        return `
+        <div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] child-row">
+            <h3 class="col-span-2 text-lg font-bold text-[var,--primary-dark)] mb-2">Child ${idx + 1}</h3>
+            <input type="hidden" name="child_id[${idx + 1}]" value="">
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Name:</label>
+                <input type="text" name="child_name[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Date of Birth:</label>
+                <input type="date" name="child_dob[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Nationality:</label>
+                <input type="text" name="child_nationality[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">National ID Number:</label>
+                <input type="text" name="child_nid[${idx + 1}]">
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Passport Number:</label>
+                <input type="text" name="child_passport[${idx + 1}]">
+            </div>
+            <button type="button" class="remove-child-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+        </div>`;
+    }
+    function createInfantForm(idx) {
+        return `
+        <div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] infant-row">
+            <h3 class="col-span-2 text-lg font-bold text-[var,--primary-dark)] mb-2">Infant ${idx + 1}</h3>
+            <input type="hidden" name="infant_id[${idx + 1}]" value="">
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Name:</label>
+                <input type="text" name="infant_name[${idx + 1}]" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Date of Birth:</label>
+                <input type="date" name="infant_dob[${idx + 1}]" required>
+            </div>
+            <button type="button" class="remove-infant-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+        </div>`;
+    }
+
+    // Add blank forms
+    document.getElementById('add-adult-btn').addEventListener('click', function() {
+        const container = document.getElementById('passenger-details-forms');
+        const idx = container.querySelectorAll('.adult-row').length;
+        container.insertAdjacentHTML('beforeend', createAdultForm(idx));
+    });
+    document.getElementById('add-child-btn').addEventListener('click', function() {
+        const container = document.getElementById('passenger-details-forms');
+        const idx = container.querySelectorAll('.child-row').length;
+        container.insertAdjacentHTML('beforeend', createChildForm(idx));
+    });
+    document.getElementById('add-infant-btn').addEventListener('click', function() {
+        const container = document.getElementById('passenger-details-forms');
+        const idx = container.querySelectorAll('.infant-row').length;
+        container.insertAdjacentHTML('beforeend', createInfantForm(idx));
+    });
+
+    // Remove forms
+    document.getElementById('passenger-details-forms').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-adult-btn') ||
+            e.target.classList.contains('remove-child-btn') ||
+            e.target.classList.contains('remove-infant-btn')) {
+            e.target.parentElement.remove();
+        }
+    });
+
+    // Continue button logic
+    document.getElementById('continue-btn').addEventListener('click', function() {
+        const adults = parseInt(document.getElementById('adults').value, 10) || 0;
+        const children = parseInt(document.getElementById('children').value, 10) || 0;
+        const infants = parseInt(document.getElementById('infants').value, 10) || 0;
+        const container = document.getElementById('passenger-details-forms');
+
+        // Remove all forms
+        container.innerHTML = '';
+
+        // Render existing adults
+        {% for passenger in ticket.adults.all %}
+        container.insertAdjacentHTML('beforeend', `<div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] adult-row">
+            <h3 class="col-span-2 text-lg font-bold text-[var(--primary-dark)] mb-2">Adult {{ forloop.counter }}</h3>
+            <input type="hidden" name="adult_id[]" value="{{ passenger.id }}">
+            <div>
+                <label class="font-semibold text-[var(--primary-dark)]">Name:</label>
+                <input type="text" name="adult_name[]" value="{{ passenger.name }}" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Date of Birth:</label>
+                <input type="date" name="adult_dob[]" value="{{ passenger.dob|date:'Y-m-d' }}" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Nationality:</label>
+                <input type="text" name="adult_nationality[]" value="{{ passenger.nationality }}" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">National ID Number:</label>
+                <input type="text" name="adult_nid[]" value="{{ passenger.id_number }}">
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Passport Number:</label>
+                <input type="text" name="adult_passport[]" value="{{ passenger.passport_number }}">
+            </div>
+            <button type="button" class="remove-adult-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+        </div>`);
+        {% endfor %}
+        // Add blank adults if needed
+        let existingAdults = {{ ticket.adults.count }};
+        for (let i = existingAdults; i < adults; i++) {
+            container.insertAdjacentHTML('beforeend', createAdultForm(i));
+        }
+
+        // Render existing children
+        {% for passenger in ticket.childs.all %}
+        container.insertAdjacentHTML('beforeend', `<div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] child-row">
+            <h3 class="col-span-2 text-lg font-bold text-[var,--primary-dark)] mb-2">Child {{ forloop.counter }}</h3>
+            <input type="hidden" name="child_id[]" value="{{ passenger.id }}">
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Name:</label>
+                <input type="text" name="child_name[]" value="{{ passenger.name }}" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Date of Birth:</label>
+                <input type="date" name="child_dob[]" value="{{ passenger.dob|date:'Y-m-d' }}" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Nationality:</label>
+                <input type="text" name="child_nationality[]" value="{{ passenger.nationality }}" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">National ID Number:</label>
+                <input type="text" name="child_nid[]" value="{{ passenger.id_number }}">
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Passport Number:</label>
+                <input type="text" name="child_passport[]" value="{{ passenger.passport_number }}">
+            </div>
+            <button type="button" class="remove-child-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+        </div>`);
+        {% endfor %}
+        let existingChildren = {{ ticket.childs.count }};
+        for (let i = existingChildren; i < children; i++) {
+            container.insertAdjacentHTML('beforeend', createChildForm(i));
+        }
+
+        // Render existing infants
+        {% for passenger in ticket.infants.all %}
+        container.insertAdjacentHTML('beforeend', `<div class="bg-white rounded-xl shadow-lg px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-2 border-[var(--primary-dark)] infant-row">
+            <h3 class="col-span-2 text-lg font-bold text-[var,--primary-dark)] mb-2">Infant {{ forloop.counter }}</h3>
+            <input type="hidden" name="infant_id[]" value="{{ passenger.id }}">
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Name:</label>
+                <input type="text" name="infant_name[]" value="{{ passenger.name }}" required>
+            </div>
+            <div>
+                <label class="font-semibold text-[var,--primary-dark)]">Date of Birth:</label>
+                <input type="date" name="infant_dob[]" value="{{ passenger.dob|date:'Y-m-d' }}" required>
+            </div>
+            <button type="button" class="remove-infant-btn px-2 py-1 mt-2 rounded bg-red-500 text-white hover:bg-red-700">Remove</button>
+        </div>`);
+        {% endfor %}
+        let existingInfants = {{ ticket.infants.count }};
+        for (let i = existingInfants; i < infants; i++) {
+            container.insertAdjacentHTML('beforeend', createInfantForm(i));
+        }
+    });
+</script>
 {% endblock %}
