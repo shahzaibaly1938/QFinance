@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Ticketsale, Destination, Airline, Adults, Childs, Route , Infants
 from customers.models import Customer
+from payments.models import Payment
 from users.models import Agent
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -428,3 +429,52 @@ def cancel_ticket(request, id):
     ticket = Ticketsale.objects.get(id=id)
     
     return render(request, 'sales/cancel_ticket.html', {'ticket':ticket})
+
+def auto_cancel_ticket(request, id):
+    ticket = Ticketsale.objects.get(id=id)
+    
+    ticket.notes += f"\nTicket auto-cancelled by system.\n Amount: {ticket.amount} \n PNR: {ticket.pnr} \n commission: {ticket.commission} \n mannual_commission: {ticket.manual_commission} \n commission_percentage: {ticket.agent.commission_rate if ticket.agent else 0} \n payment_status: {ticket.paid} \n"
+    ticket.amount = 0
+    ticket.commission = 0
+    ticket.manual_commission = 0
+    ticket.paid = 'unpaid'
+    payment = Payment.objects.filter(ticket=ticket).first()
+    if payment:
+        payment.delete()  
+    ticket.status = 'auto_cancelled'  
+    ticket.save()
+    messages.success(request, f'Ticket: {ticket.pnr} of {ticket.customer.name} is auto-cancelled successfully!')
+    return redirect('ticket_sale')
+
+
+def self_cancel_ticket(request, id):
+    ticket = Ticketsale.objects.get(id=id)
+    
+    ticket.notes += f"\nTicket self-cancelled by user.\n Amount: {ticket.amount} \n PNR: {ticket.pnr} \n commission: {ticket.commission} \n mannual_commission: {ticket.manual_commission} \n commission_percentage: {ticket.agent.commission_rate if ticket.agent else 0} \n payment_status: {ticket.paid} \n"
+    ticket.amount = 0
+    ticket.commission = 0
+    ticket.manual_commission = 0
+    ticket.paid = 'unpaid'
+    payment = Payment.objects.filter(ticket=ticket).first()
+    if payment:
+        payment.delete()  
+    ticket.status = 'self_cancelled'  
+    ticket.save()
+    messages.success(request, f'Ticket: {ticket.pnr} of {ticket.customer.name} is self-cancelled successfully!')
+    return redirect('ticket_sale')
+
+def no_show_ticket(request, id):
+    ticket = Ticketsale.objects.get(id=id)
+    
+    ticket.notes += f"\nTicket marked as no-show.\n Amount: {ticket.amount} \n PNR: {ticket.pnr} \n commission: {ticket.commission} \n mannual_commission: {ticket.manual_commission} \n commission_percentage: {ticket.agent.commission_rate if ticket.agent else 0} \n payment_status: {ticket.paid} \n"
+    ticket.amount = 0
+    ticket.commission = 0
+    ticket.manual_commission = 0
+    ticket.paid = 'unpaid'
+    payment = Payment.objects.filter(ticket=ticket).first()
+    if payment:
+        payment.delete()  
+    ticket.status = 'no_show'  
+    ticket.save()
+    messages.success(request, f'Ticket: {ticket.pnr} of {ticket.customer.name} is marked as no-show successfully!')
+    return redirect('ticket_sale')

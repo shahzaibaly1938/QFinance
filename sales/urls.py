@@ -17,4 +17,7 @@ urlpatterns = [
     path('edit-destination/<int:id>/', views.edit_destination, name='edit_destination'),
     path('delete-destination/<int:id>/', views.delete_destination, name='delete_destination'),
     path('cancel-ticket/<int:id>/', views.cancel_ticket, name='cancel_ticket'),
+    path('auto-cancel/<int:id>/', views.auto_cancel_ticket, name='auto_cancel_ticket'),
+    path('self-cancel/<int:id>/', views.self_cancel_ticket, name='self_cancel_ticket'),
+    path('no-show/<int:id>/', views.no_show_ticket, name='no_show_ticket'),
 ]

@@ -47,6 +47,10 @@
           <td class="py-2">{{ ticket.reference }}</td>
         </tr>
         <tr>
+          <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Status:</th>
+          <td class="py-2">{{ ticket.status }}</td>
+        </tr>
+        <tr>
           <th class="py-2 pr-4 text-[var(--primary-dark)] font-medium">Payment Status:</th>
           <td class="py-2">
             {% if ticket.paid == 'paid' %}

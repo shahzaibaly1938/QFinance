@@ -31,6 +31,7 @@ class Ticketsale(models.Model):
     no_of_infants = models.PositiveIntegerField(default=0)
     reference = models.CharField(max_length=100)
     paid = models.CharField(max_length=30, choices=[("paid", "Paid"), ("unpaid", "Unpaid")], default='')
+    status = models.CharField(max_length=30, choices=[("active", "Active"), ("auto_cancelled", "Auto_Cancelled"), ("self_cancelled", "Self Cancelled"), ("no_show", "No Show")], default='active')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
